@@ -36,7 +36,7 @@ button.show()
 app.exec_()
 ````
 
-<-- put a capture of themes here -->
+![CSS Themes](doc/css-themes.png)
 
 # widgets
 
@@ -57,13 +57,13 @@ layout.addWidget(QPushButton('three'))
 layout.addWidget(QPushButton('four'))
 ````
 
-<-- put a gif of the widget here -->
+![Flow Layout](doc/flow-layout.gif)
 
 ## TagBar
 
 An augmented QLineEdit with buttons, allowing to edit a list of "tags"
 
-<-- put a gif of the widget here -->
+![TagBar](doc/tag-bar.gif)
 
 ## DeclarativeForm
 
@@ -71,7 +71,7 @@ The `DeclarativeForm` allows to generate widgets from a data structure of proper
 
 Useful for asking the user a series of info without the hassle of manually creating the widgets
 
-<-- put an image of the widget here -->
+![DelarativeForm](doc/declarative-form.jpg)
 
 ````python
 from guibedos import declarative_form as df
