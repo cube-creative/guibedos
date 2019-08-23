@@ -44,7 +44,7 @@ root_property = df.Group('personal_info', caption="Personnal Information", prope
 
 
 app = QtWidgets.QApplication([])
-css.set_theme(app, 'light-green')
+css.set_theme(app, 'light-blue')
 
 widget = df.DeclarativeForm(df.Label('info', caption='this wont be shown'))
 
