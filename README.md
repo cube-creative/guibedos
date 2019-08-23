@@ -4,13 +4,13 @@ PySide widgets and helpers
 
 This project is used alongside [Qt.py](https://github.com/mottosso/Qt.py).
 
-If you don't plan on using Qt.py, you must comply with the Qt5/PySide2 syntax (`from Qt import QtWidgets`) 
+If you don't plan on using Qt.py, you must use PyQt5/PySide2 (`from Qt import QtWidgets`)
 
 # CSS
 
 It is common to apply a custom CSS stylesheet to a QApplication.
 
-This modules allows to load 6 different themes, borrowed from the FreeCAD project
+This module allows to load 6 different themes, borrowed from the [FreeCAD project](https://github.com/FreeCAD/FreeCAD/tree/master/src/Gui/Stylesheets)
 
 Stylesheets and icons are provided
 
@@ -63,7 +63,13 @@ layout.addWidget(QPushButton('four'))
 
 An augmented QLineEdit with buttons, allowing to edit a list of "tags"
 
+ - Text + Button selection with `SHIFT` + `ARROW`
+ - Copy/Paste
+ - Clic on button removes it
+
 ![TagBar](doc/tag-bar.gif)
+
+_See `examples/tag-bar.py` in this repository_
 
 ## DeclarativeForm
 
@@ -72,6 +78,8 @@ The `DeclarativeForm` allows to generate widgets from a data structure of proper
 Useful for asking the user a series of info without the hassle of manually creating the widgets
 
 ![DelarativeForm](doc/declarative-form.jpg)
+
+_See `examples/declarative-form.py` in this repository_
 
 ````python
 from guibedos import declarative_form as df
