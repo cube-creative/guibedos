@@ -42,9 +42,11 @@ app.exec_()
 
 ## FlowLayout
 
-The "flow" layout is not available in Qt.
+The "flow" layout is not available in native Qt.
 
 Allows to layout in 2D a 1D array of widgets
+
+_This widget was borrowed then adapted from [PySide Examples](https://github.com/PySide/Examples/blob/master/examples/layouts/flowlayout.py)_
 
 ````python
 from Qt.QtWidgets import QPushButton
