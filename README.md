@@ -119,6 +119,40 @@ import guibedos.helpers
 guibedos.helpers.update_combo(some_qcombobox, ['some', 'items'])
 ````
 
+## Blender
+
+The module `blender` exposes a way to show QWidgets alongside Blender.
+
+You will need a custom-compiled PySide build (compiled with the same compiler as Blender)
+
+This modules groups and docks all widgets into a QMainWindow, and ensures that the QApplication is updated within 
+blender's main loop.
+
+**Do not use  `QApplication.exec_()`, as it is a synchronous call, and will freeze blender**
+
+````python
+import guibedos.blender
+from some import SomeWidget
+
+class SomeOperator(bpy.types.Operator):
+    """
+    Does something useful, with PySide
+    """
+    bl_idname = "cube.some"
+    bl_label = "Some"
+
+    def execute(self, context):
+        self.report({'OPERATOR'}, 'bpy.ops.cube.some()')
+
+        window = guibedos.blender.new_widget(SomeWidget)
+        guibedos.blender.dock_to_main_window(window)
+
+        return {'FINISHED'}
+
+    def invoke(self, context, event):
+        return self.execute(context)
+````
+
 ## Notes
 
 - CSS stylesheets and icons are borrowed from FreeCAD, more info 
