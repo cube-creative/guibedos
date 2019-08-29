@@ -15,6 +15,6 @@ class Integer(BaseProperty):
         self._value = value
 
     def _validate(self):
-        lower_bound = self.range[0] is not None and self.value <= self.range[0]
-        upper_bound = self.range[1] is not None and self.value >= self.range[1]
+        lower_bound = self.range[0] is not None and self.value >= self.range[0]
+        upper_bound = self.range[1] is not None and self.value <= self.range[1]
         return lower_bound and upper_bound
