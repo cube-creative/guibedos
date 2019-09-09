@@ -5,6 +5,7 @@ __all__ = [
     'List',
     'Label',
     'Integer',
+    'Dirpath',
     'Filepath',
     'Group'
 ]
@@ -15,6 +16,7 @@ from .bool_ import Bool
 from .list_ import List
 from .label import Label
 from .integer import Integer
+from .dirpath import Dirpath
 from .filepath import Filepath
 from ..constants import *
 

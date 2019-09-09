@@ -37,6 +37,7 @@ def make_widget(property_, parent_widget):
         Enum: _make_enum,
         Integer: _make_integer,
         Bool: _make_bool,
+        Dirpath: _make_dirpath,
         Filepath: _make_filepath,
         List: _make_list
     }[type(property_)](property_, parent_widget)
@@ -93,6 +94,16 @@ def _make_bool(property_, parent_widget):
     bool_ = CheckBox(property_)
     parent_widget.layout().addWidget(bool_)
     return bool_
+
+
+def _make_dirpath(property_, parent_widget):
+    label = QtWidgets.QLabel(property_.caption)
+    dirpath = DirpathWidget(property_)
+    parent_widget.layout().addWidget(vertical_layout(
+        widgets=[label, dirpath],
+        stretches=[0, 100]
+    ))
+    return dirpath
 
 
 def _make_filepath(property_, parent_widget):
