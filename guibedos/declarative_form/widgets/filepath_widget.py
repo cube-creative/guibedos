@@ -1,4 +1,36 @@
+import os
 from Qt import QtWidgets
+
+
+class FileDialog(QtWidgets.QFileDialog):
+    def __init__(self, *args):
+        QtWidgets.QFileDialog.__init__(self, *args)
+        self.setOption(self.DontUseNativeDialog, False)
+        self.setFileMode(self.ExistingFiles)
+
+        self.selected_files = list()
+
+        self.open_button = self._hack_button()
+        self.tree = self.findChild(QtWidgets.QTreeView)
+
+    def _hack_button(self):
+        buttons = self.findChildren(QtWidgets.QPushButton)
+        open_button = [x for x in buttons if 'open' in str(x.text()).lower()][0]
+        open_button.clicked.disconnect()
+        open_button.clicked.connect(self.openClicked)
+        return open_button
+
+    def openClicked(self):
+        indexes = self.tree.selectionModel().selectedIndexes()
+        files = []
+        for index in indexes:
+            if index.column() == 0:
+                files.append(os.path.normpath(os.path.join(
+                    str(self.directory().absolutePath()),
+                    str(index.data()))
+                ))
+        self.selected_files = files
+        self.close()
 
 
 class FilepathWidget(QtWidgets.QWidget):
@@ -20,10 +52,19 @@ class FilepathWidget(QtWidgets.QWidget):
         self.text.setText(property_.value)
 
     def _browse_clicked(self):
-        filepath = QtWidgets.QFileDialog.getOpenFileName(dir=self.property_.value)[0]
-        if filepath:
-            self.text.setText(filepath)
-            self._value_changed(filepath)
+        dialog = FileDialog()
+        dialog.exec_()
+
+        selected = dialog.selectedFiles()
+        if selected:
+            self.text.setText(selected[0])
+            self._value_changed(selected[0])
+            return
+
+        selected = dialog.selectedFiles()
+        if selected:
+            self.text.setText(selected[0])
+            self._value_changed(selected[0])
 
     def _value_changed(self, value):
         self.property_.value = value
