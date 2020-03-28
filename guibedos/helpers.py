@@ -1,3 +1,28 @@
+from Qt import QtCore
+from Qt import QtWidgets
+
+
+class Hourglass:
+    """
+    Context manager to freeze and show a hourglass
+
+    ````
+    with Hourglass(self):
+        # do lengthy stuff
+    ````
+    """
+    def __init__(self, parent):
+        self._parent = parent
+
+    def __enter__(self):
+        QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
+        self._parent.setEnabled(False)
+        QtWidgets.QApplication.processEvents()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._parent.setEnabled(True)
+        QtWidgets.QApplication.restoreOverrideCursor()
+        QtWidgets.QApplication.processEvents()
 
 
 def update_combo(combo, items, select=None):

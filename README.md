@@ -107,6 +107,23 @@ Calling `data()` on the widget returns a data structure reflecting property's st
 
 ### helpers
 
+#### Hourglass
+
+Context manager that freezes the widget and display a hourglass cursor
+
+````python
+import guibedos.helpers
+
+class MyWidget(QtWidgets.QWidget):
+
+    def __init__(self, parent=None):
+        QWidgets.QWidget.__init_(self, parent)
+       
+    def lengthy_stuff():
+        with guibedos.helpers.Hourglass(self):
+            # do a lot of stuff
+````
+
 #### Update Combo
 
 Updates a QComboBox items and tries to select previously selected item
