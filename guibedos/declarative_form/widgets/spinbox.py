@@ -1,7 +1,7 @@
 from Qt import QtWidgets
 
-
 _MAX = 2147483647
+
 
 class SpinBox(QtWidgets.QSpinBox):
 
@@ -9,12 +9,16 @@ class SpinBox(QtWidgets.QSpinBox):
         QtWidgets.QSpinBox.__init__(self, parent)
         self.property_ = property_
 
-        if property_.range[0] is not None:
+        if property_ is not None \
+                and property_.range is not None \
+                and property_.range[0] is not None:
             self.setMinimum(property_.range[0])
         else:
             self.setMinimum(-_MAX)
 
-        if property_.range[1] is not None:
+        if property_ is not None \
+                and property_.range is not None \
+                and property_.range[1] is not None:
             self.setMaximum(property_.range[1])
         else:
             self.setMaximum(_MAX)
