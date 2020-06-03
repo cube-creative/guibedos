@@ -1,13 +1,12 @@
 deploy:
   stage: deploy
-  tags: [deploy]
+  tags: [deploy-windows]
   only:
     refs:
       - master
     variables:
       - $CI_PROJECT_NAMESPACE == "cube"
-  script:
-    - sudo pip install --no-deps --target /mnt/r/deploy/cube/packages --progress-bar off --upgrade git+$CI_REPOSITORY_URL
+  script: "C:\\cube\\scripts\\gitlabci-pip.ps1"
 
 deploy-xilam:
   stage: deploy
