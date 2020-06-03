@@ -162,9 +162,11 @@ class TagBar(QtWidgets.QWidget):
         self._autocompletables = items
         completer = QtWidgets.QCompleter(self._autocompletables, self)
         completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self._editor.blockSignals(True)
         self._editor.setCompleter(completer)
         self._editor.clear()
         self._editor.addItems(items)
+        self._editor.blockSignals(False)
         self._editor.setCurrentIndex(-1)
 
     def _index_changed(self):
