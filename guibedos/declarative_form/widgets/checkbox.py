@@ -23,3 +23,4 @@ class CheckBox(QtWidgets.QCheckBox):
     def callback(self, callback, sender):
         self.interaction_callback = callback
         self.sender = sender
+        self._value_changed(self.isChecked())
