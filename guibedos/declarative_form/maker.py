@@ -67,6 +67,7 @@ def _make_text(property_, parent_widget):
     ))
     return lineedit
 
+
 def _make_enum(property_, parent_widget):
     label = QtWidgets.QLabel(property_.caption)
     combo = ComboBox(property_)
