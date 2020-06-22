@@ -2,17 +2,20 @@ class InteractionHandler:
     def __init__(self):
         self.data = {}
 
-    def get_widgets(self, name, data, widgets_found):
-        for property_name, widget in data.items():
+    def _get_widget(self, given_property, data):
+        for property, widget in data.items():
             if type(widget) == dict:
-                widgets_found = self.get_widgets(name, widget, widgets_found)
-            if property_name == name:
-                widgets_found.append(widget)
-        return widgets_found
+                widget_found = self._get_widget(given_property, widget)
+                if widget_found:
+                    return widget_found
+            elif property == given_property:
+                return widget
 
     def assign(self, data):
         self.data = data
 
+    def widget(self, property):
+        return self._get_widget(property, self.data)
+
     def register(self, property, callback):
-        for widget in self.get_widgets(property, self.data, list()):
-            widget.callback(callback=callback, sender=property)
+        self.widget(property).callback(callback=callback, sender=property)
