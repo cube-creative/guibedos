@@ -8,8 +8,8 @@ class InteractionHandler:
         else:
             return property.name == given_property.name
 
-    def _get_widget(self, given_property, data):
-        for property, widget in data.items():
+    def _get_widget(self, given_property, widgets):
+        for property, widget in widgets.items():
             if type(widget) == dict:
                 widget_found = self._get_widget(given_property, widget)
                 if widget_found:

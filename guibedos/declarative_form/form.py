@@ -36,7 +36,7 @@ class DeclarativeForm(QtWidgets.QWidget):
             self.handler.assign(self.widgets())
 
     def widgets(self, widget=_ROOT_WIDGET):
-        data_ = dict()
+        widgets = dict()
         if widget == _ROOT_WIDGET:
             widget = self.base_widget
 
@@ -49,12 +49,12 @@ class DeclarativeForm(QtWidgets.QWidget):
             subdata = dict()
             for subwidget in widget.subwidgets:
                 subdata.update(self.widgets(subwidget))
-            data_[property_] = subdata
+            widgets[property_] = subdata
 
         else:
-            data_[widget.property_] = widget
+            widgets[widget.property_] = widget
 
-        return data_
+        return widgets
 
     def data(self, widget=_ROOT_WIDGET):
         data_ = dict()
