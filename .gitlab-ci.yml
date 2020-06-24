@@ -8,7 +8,7 @@ release-lucet:
   stage: deploy
   tags: [deploy-windows]
   script:
-    - C:/cube/python3/python.exe -m releaselucet --staging --clone
+    - C:/cube/python3/python.exe -m releaselucet --staging --pip
 
 docgen:
   stage: docgen
