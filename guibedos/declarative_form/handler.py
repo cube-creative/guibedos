@@ -1,6 +1,6 @@
 class InteractionHandler:
     def __init__(self):
-        self.data = {}
+        self.widgets = {}
 
     def _widget_is_found(self, property, given_property):
         if type(given_property) == str:
@@ -10,22 +10,25 @@ class InteractionHandler:
 
     def _get_widget(self, given_property, widgets):
         for property, widget in widgets.items():
-            if type(widget) == dict:
-                widget_found = self._get_widget(given_property, widget)
-                if widget_found:
-                    return widget_found
-            elif self._widget_is_found(property, given_property):
+            if self._widget_is_found(property, given_property):
                 return (widget, property)
 
-    def assign(self, data):
-        self.data = data
+            if type(widget) == dict:
+                result = self._get_widget(given_property, widget)
+                if result:
+                    return result
+
+        return False
+
+    def assign(self, widgets):
+        self.widgets = widgets
 
     def widget(self, property):
-        return self._get_widget(property, self.data)[0]
+        return self._get_widget(property, self.widgets)[0]
 
     def property(self, property):
         if type(property) == str:
-            return self._get_widget(property, self.data)[1]
+            return self._get_widget(property, self.widgets)[1]
         else:
             return property
 
