@@ -28,14 +28,14 @@ class DeclarativeForm(QtWidgets.QWidget):
             data_[property] = subdata
         else:
             data_[property.name] = subdata
-        return data
+        return data_
 
     def _assign_value(self, data_, property, widget, get_property_widget):
         if get_property_widget:
             data_[widget.property_] = widget
         else:
             data_[widget.property_.name] = property.value if property.is_valid() else None
-        return data
+        return data_
 
     def _retrieve_data(self, widget, get_property_widget):
         data_ = dict()
@@ -52,10 +52,10 @@ class DeclarativeForm(QtWidgets.QWidget):
             for subwidget in widget.subwidgets:
                 subdata.update(self._retrieve_data(subwidget, get_property_widget))
 
-            _assign_subdata(data_, property_, subdata, get_property_widget)
+            self._assign_subdata(data_, property_, subdata, get_property_widget)
 
         else:
-            _assign_value(data_, property_, widget, get_property_widget)
+            self._assign_value(data_, property_, widget, get_property_widget)
 
         return data_
 
