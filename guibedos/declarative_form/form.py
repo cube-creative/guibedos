@@ -23,42 +23,6 @@ class DeclarativeForm(QtWidgets.QWidget):
         self.handler = handler
         self.reload(root_property)
 
-    def _assign_subdata(self, data_, property, subdata, get_property_widget):
-        if get_property_widget:
-            data_[property] = subdata
-        else:
-            data_[property.name] = subdata
-        return data_
-
-    def _assign_value(self, data_, property, widget, get_property_widget):
-        if get_property_widget:
-            data_[widget.property_] = widget
-        else:
-            data_[widget.property_.name] = property.value if property.is_valid() else None
-        return data_
-
-    def _retrieve_data(self, widget, get_property_widget):
-        data_ = dict()
-        if widget == _ROOT_WIDGET:
-            widget = self.base_widget
-
-        if widget is None:
-            return dict()
-
-        property_ = widget.property_
-
-        if isinstance(widget, QtWidgets.QGroupBox):
-            subdata = dict()
-            for subwidget in widget.subwidgets:
-                subdata.update(self._retrieve_data(subwidget, get_property_widget))
-
-            self._assign_subdata(data_, property_, subdata, get_property_widget)
-
-        else:
-            self._assign_value(data_, property_, widget, get_property_widget)
-
-        return data_
-
     def reload(self, root_property):
         if not self.layout():
             layout = QtWidgets.QVBoxLayout(self)
@@ -72,7 +36,43 @@ class DeclarativeForm(QtWidgets.QWidget):
             self.handler.assign(self.widgets())
 
     def widgets(self, widget=_ROOT_WIDGET):
-        return self._retrieve_data(widget, get_property_widget=True)
+        widgets = dict()
+        if widget == _ROOT_WIDGET:
+            widget = self.base_widget
+
+        if widget is None:
+            return dict()
+
+        property_ = widget.property_
+
+        if isinstance(widget, QtWidgets.QGroupBox):
+            subdata = dict()
+            for subwidget in widget.subwidgets:
+                subdata.update(self.widgets(subwidget))
+            widgets[property_] = subdata
+
+        else:
+            widgets[widget.property_] = widget
+
+        return widgets
 
     def data(self, widget=_ROOT_WIDGET):
-        return self._retrieve_data(widget, get_property_widget=False)
+        data_ = dict()
+        if widget == _ROOT_WIDGET:
+            widget = self.base_widget
+
+        if widget is None:
+            return dict()
+
+        property_ = widget.property_
+
+        if isinstance(widget, QtWidgets.QGroupBox):
+            subdata = dict()
+            for subwidget in widget.subwidgets:
+                subdata.update(self.data(subwidget))
+            data_[property_.name] = subdata
+
+        else:
+            data_[widget.property_.name] = property_.value if property_.is_valid() else None
+
+        return data_

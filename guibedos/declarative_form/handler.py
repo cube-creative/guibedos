@@ -29,8 +29,8 @@ class InteractionHandler:
     def widget(self, widget):
         return self._get_widget(widget, self.widgets)
 
-    def property(self, property):
-        return self._get_property(property, self.widgets)
+    def property(self, property_name):
+        return self._get_property(property_name, self.widgets)
 
     def assign(self, widgets):
         self.widgets = widgets
