@@ -1,5 +1,5 @@
 from Qt import QtWidgets
-from . import maker
+from . import maker, handler
 
 
 _ROOT_WIDGET = '_ROOT_WIDGET'
@@ -18,8 +18,9 @@ def _clear_layout(layout):
 
 class DeclarativeForm(QtWidgets.QWidget):
 
-    def __init__(self, root_property, parent=None):
+    def __init__(self, root_property, parent=None, handler=None):
         QtWidgets.QWidget.__init__(self, parent)
+        self.handler = handler
         self.reload(root_property)
 
     def reload(self, root_property):
@@ -31,9 +32,32 @@ class DeclarativeForm(QtWidgets.QWidget):
 
         self.base_widget = maker.make_widget(root_property, self)
 
+        if self.handler:
+            self.handler.assign(self.widgets())
+
+    def widgets(self, widget=_ROOT_WIDGET):
+        widgets = dict()
+        if widget == _ROOT_WIDGET:
+            widget = self.base_widget
+
+        if widget is None:
+            return dict()
+
+        property_ = widget.property_
+
+        if isinstance(widget, QtWidgets.QGroupBox):
+            subdata = dict()
+            for subwidget in widget.subwidgets:
+                subdata.update(self.widgets(subwidget))
+            widgets[property_] = subdata
+
+        else:
+            widgets[widget.property_] = widget
+
+        return widgets
+
     def data(self, widget=_ROOT_WIDGET):
         data_ = dict()
-
         if widget == _ROOT_WIDGET:
             widget = self.base_widget
 

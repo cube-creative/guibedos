@@ -1,20 +1,18 @@
-deploy:
+stages:
+  - deploy
+  - docgen
+
+variables:
+  PYTHONPATH: "R:/deploy/cube/packages"
+
+release-lucet:
   stage: deploy
   tags: [deploy-windows]
-  only:
-    refs:
-      - master
-    variables:
-      - $CI_PROJECT_NAMESPACE == "cube"
-  script: "C:\\cube\\scripts\\gitlabci-pip.ps1"
-
-deploy-xilam:
-  stage: deploy
-  tags: [deploy]
-  only:
-    refs:
-      - master
-    variables:
-      - $CI_PROJECT_NAMESPACE == "cube"
   script:
-    - sudo pip install --no-deps --target /mnt/r-xilam/deploy/cube/packages --progress-bar off --upgrade git+$CI_REPOSITORY_URL
+    - C:/cube/python3/python.exe -m releaselucet --staging --pip
+
+docgen:
+  stage: docgen
+  tags: [docgenyco]
+  script:
+    - python -m docgenyco $CI_REPOSITORY_URL /home/documentation/production/devdoc/ "Developper documentation"
