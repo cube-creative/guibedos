@@ -22,7 +22,7 @@ def parse_images(css_content):
     return css_content.replace('qss:', css_root.replace('\\', '/') + '/')
 
 
-def set_theme(widget, theme_name):
+def set_theme(widget, theme_name, custom_stylesheets=None):
     """
     Given a QWidget (can be a QApplication), sets the theme
 
@@ -30,7 +30,11 @@ def set_theme(widget, theme_name):
 
     :param widget: a QWidget
     :param theme_name: name of the .qss file
+    :param custom_stylesheets: List of custom stylesheets to append to the theme style
     """
+    if custom_stylesheets is None:
+        custom_stylesheets = []
+
     css_root = os.path.join(_here(), 'resources')
     css_filepath = os.path.join(css_root, theme_name + '.qss')
 
@@ -38,7 +42,8 @@ def set_theme(widget, theme_name):
         raise RuntimeError('Could not find theme file ' + css_filepath)
 
     with open(css_filepath, 'r') as f_css:
-        style = f_css.read()
+        theme_style = f_css.read()
 
-    style = parse_images(style)
-    widget.setStyleSheet(style)
+    theme_style = parse_images(theme_style)
+    complete_style = theme_style + " ".join(custom_stylesheets)
+    widget.setStyleSheet(complete_style)
