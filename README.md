@@ -38,7 +38,23 @@ app.exec_()
 
 ![CSS Themes](doc/css-themes.png)
 
-# widgets
+## Custom stylesheets
+
+You can add your custom stylesheets to the chosen theme by passing a list of stylesheets to the `set_theme()` method.
+
+````python
+custom_stylesheet_file_path = os.path.join(
+    os.path.abspath((os.path.dirname(__file__))),
+    'resources',
+    'stylesheet.css'
+).replace('\\', '/')
+
+custom_stylesheet = open(custom_stylesheet_file_path).read()
+
+css.set_theme(app, 'dark-blue', [custom_stylesheet])
+````
+
+# Widgets
 
 ## FlowLayout
 
