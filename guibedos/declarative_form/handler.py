@@ -4,11 +4,11 @@ class InteractionHandler:
 
     def _get_property(self, given_property, widgets):
         for property, widget in widgets.items():
-            if property.name == given_property.name:
+            if property.name == given_property:
                 return property
 
             if type(widget) == dict:
-                result = self._get_widget(given_property, widget)
+                result = self._get_property(given_property, widget)
                 if result:
                     return result
 
@@ -37,6 +37,6 @@ class InteractionHandler:
 
     def register(self, property, callback):
         if type(property) == str:
-            property = self.property(property, self.widgets)
+            property = self.property(property)
 
         self.widget(property).callback(callback=callback, sender=property)
