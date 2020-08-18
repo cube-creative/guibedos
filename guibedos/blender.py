@@ -41,7 +41,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.settings = QtCore.QSettings('GUIBedos', 'Blender')
         geometry = self.settings.value('geometry', '')
-        self.restoreGeometry(geometry)
+        if geometry:
+            self.restoreGeometry(geometry)
 
     def save_geometry(self):
         geometry = self.saveGeometry()
