@@ -76,12 +76,20 @@ class FlowLayout(QtWidgets.QLayout):
         return size
 
     def do_layout(self, rect, test_only=True):
-        x = rect.x()
-        y = rect.y()
+        margins = self.contentsMargins()
+        start_x = rect.x() + margins.left()
+        start_y = rect.y() + margins.top()
+
+        x = start_x
+        y = start_y
         line_height = 0
 
         for item in self.item_list:
             widget = item.widget()
+
+            if not widget.isVisible():
+                continue
+
             space_x = self.spacing() + widget.style().layoutSpacing(
                 QtWidgets.QSizePolicy.PushButton, QtWidgets.QSizePolicy.PushButton, QtCore.Qt.Horizontal
             )
@@ -91,7 +99,7 @@ class FlowLayout(QtWidgets.QLayout):
 
             next_x = x + widget.sizeHint().width() + space_x
             if next_x - space_x > rect.right() and line_height > 0:
-                x = rect.x()
+                x = start_x
                 y = y + line_height + space_y
                 next_x = x + widget.sizeHint().width() + space_x
                 line_height = 0
