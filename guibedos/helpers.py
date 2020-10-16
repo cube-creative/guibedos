@@ -11,6 +11,7 @@ class Hourglass:
         # do lengthy stuff
     ````
     """
+
     def __init__(self, parent):
         self._parent = parent
 
@@ -52,18 +53,3 @@ def update_combo(combo, items, select=None):
     else:
         combo.blockSignals(False)
         combo.setCurrentIndex(combo.findText(current))
-
-
-def move_to_new_thread(qobject):
-    """Creates a new `QThread`. Attaches given `qobject` (instance of `QObject`) to it
-
-    Given `qobject` must have an `exec_()` slot and emit a `finished` Signal when done
-
-    Returns the new `QThread` instance
-    """
-    thread = QtCore.QThread()
-    qobject.moveToThread(thread)
-    thread.started.connect(qobject.exec_)
-    qobject.finished.connect(thread.quit)
-    #qobject.finished.connect(qobject.deleteLater)  Necessary ?
-    return thread
