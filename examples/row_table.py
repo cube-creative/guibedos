@@ -30,7 +30,7 @@ def make_data():
 
 def process_row(row):
     row.cells[0][0] += ' <'
-    row.cells[4] = RowTableModel.precompute_cell((
+    row.cells[4] = RowTableModel.create_qcolors((
         'PROCESSED : {}'.format(row.data),
         None,
         (255, 0, 0)
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     model.set_rows(make_data())
     model.start()
 
-    vue.setModel(model)
+    vue.set_model(model)
 
     vue.resize(1280, 720)
     vue.show()
