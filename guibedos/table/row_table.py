@@ -72,6 +72,7 @@ class RowBackgroundProcessor(Threadable):
         Threadable.__init__(self, parent)
         self._rows = list()
         self._process_callback = None
+        self._processed_row_indexes = list()
 
     @property
     def has_callback(self):
@@ -82,16 +83,29 @@ class RowBackgroundProcessor(Threadable):
 
     def reset(self):
         self._rows = list()
+        self._processed_row_indexes = list()
 
     def add_row(self, row):
         self._rows.append(row)
 
     def loop_kick(self):
-        QThread.msleep(self.DEFAULT_SLEEP_MS)
         if not self._rows:
+            QThread.msleep(self.DEFAULT_SLEEP_MS)
             return
 
-        self.row_processed.emit(self._process_callback(self._rows.pop()))
+        row = self._rows.pop()
+        if row.index not in self._processed_row_indexes:
+            self.row_processed.emit(self._process_callback(row))
+            self._processed_row_indexes.append(row.index)
+
+        self._remove_already_loaded()
+
+        QThread.msleep(20)
+
+    def _remove_already_loaded(self):
+        for row in reversed(self._rows):
+            if row.index in self._processed_row_indexes:
+                self._rows.pop()
 
 
 class RowTableModel(QAbstractTableModel):
@@ -111,7 +125,6 @@ class RowTableModel(QAbstractTableModel):
         self._row_count = 0
         self._column_count = 0
 
-        self._queued_row_indexes = list()
         self._processed_row_indexes = list()
         self._background_processor = RowBackgroundProcessor()
         self._background_thread = move_to_new_thread(
@@ -125,7 +138,6 @@ class RowTableModel(QAbstractTableModel):
     def reset_background_processing(self):
         self._background_processor.reset()
         self._processed_row_indexes = list()
-        self._queued_row_indexes = list()
 
     def set_background_processing_callback(self, callback):
         self._background_processor.set_callback(callback)
@@ -143,10 +155,6 @@ class RowTableModel(QAbstractTableModel):
         return [cell[0], background, foreground]
 
     def row_processed(self, row):
-        try:
-            self._queued_row_indexes.remove(row.index)
-        except ValueError as e:
-            pass
         self._processed_row_indexes.append(row.index)
         self._rows[row.index] = row
         self.dataChanged.emit(
@@ -167,7 +175,6 @@ class RowTableModel(QAbstractTableModel):
             self._rows = list()
             self._background_processor.reset()
             self._processed_row_indexes = list()
-            self._queued_row_indexes = list()
 
             for index, row in enumerate(rows):
                 new_row = Row(
@@ -183,7 +190,6 @@ class RowTableModel(QAbstractTableModel):
             self._rows = list()
             self._background_processor.reset()
             self._processed_row_indexes = list()
-            self._queued_row_indexes = list()
 
             self._row_count = 0
 
@@ -201,11 +207,13 @@ class RowTableModel(QAbstractTableModel):
         row_index = index.row()
         column_index = index.column()
 
-        if self._background_processor.has_callback and row_index not in self._queued_row_indexes and row_index not in self._processed_row_indexes:
-            self._queued_row_indexes.append(row_index)
+        if role == Qt.DisplayRole and \
+                self._background_processor.has_callback and \
+                row_index not in self._processed_row_indexes:
             self._background_processor.add_row(self._rows[row_index])
 
         data_type = self._ROLES.get(role)
         if data_type is None:
             return
+
         return self._rows[row_index].cells[column_index][data_type]
