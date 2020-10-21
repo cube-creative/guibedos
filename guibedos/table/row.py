@@ -29,7 +29,7 @@ class Row:
         return Row(self.cells, self.data, new_index)
 
     def build_cache(self):
-        self.search_cache = " ".join('{}'.format(cell[0]) for cell in self.cells)
+        self.search_cache = " ".join('{}'.format(cell[0]).lower() for cell in self.cells)
         self.cells = [self._cell_cache(cell) for cell in self.cells]
 
     @staticmethod

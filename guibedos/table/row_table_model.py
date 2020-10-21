@@ -1,57 +1,13 @@
-from PySide2.QtCore import Qt, QAbstractTableModel, Signal, QThread, QCoreApplication
-from guibedos.threading import Threadable, move_to_new_thread
-
-
-class RowBackgroundProcessor(Threadable):
-    SLEEP_MS = 20
-    row_processed = Signal(object)
-
-    def __init__(self, parent=None):
-        Threadable.__init__(self, parent)
-        self._rows = list()
-        self._process_callback = None
-        self._processed_row_indexes = list()
-
-    @property
-    def has_callback(self):
-        return self._process_callback is not None
-
-    def set_callback(self, callback):
-        self._process_callback = callback
-
-    def reset(self):
-        self._rows = list()
-        self._processed_row_indexes = list()
-
-    def add_row(self, row):
-        self._rows.append(row)
-
-    def loop_kick(self):
-        if not self._rows:
-            QThread.msleep(self.DEFAULT_SLEEP_MS)
-            return
-
-        row = self._rows.pop()
-        if row.index not in self._processed_row_indexes:
-            new_row = self._process_callback(row)
-            new_row.build_cache()
-
-            self.row_processed.emit(new_row)
-            self._processed_row_indexes.append(new_row.index)
-
-            self._cleanup(row)
-
-        QThread.msleep(self.SLEEP_MS)
-
-    def _cleanup(self, row):
-        while True:
-            try:
-                self._rows.remove(row)
-            except ValueError:
-                break
+from PySide2.QtCore import Qt, QAbstractTableModel, Signal
+from .row_model_all import RowAllModel
 
 
 class RowTableModel(QAbstractTableModel):
+    """
+    This is the actual `QAbstractTableModel` that wraps its `AllRowTableModel` member and allows fast text search
+    """
+    progress_updated = Signal(int)
+
     DISPLAY = 0
     BACKGROUND = 1
     FOREGROUND = 2
@@ -60,53 +16,36 @@ class RowTableModel(QAbstractTableModel):
         Qt.BackgroundRole: BACKGROUND,
         Qt.ForegroundRole: FOREGROUND
     }
-    progress_updated = Signal(int)
 
     def __init__(self, background_processing_callback=None, parent=None):
         QAbstractTableModel.__init__(self, parent)
-        self._headers = list()
+        self._model_all = RowAllModel(background_processing_callback)
+        self._model_all.row_updated.connect(self._row_updated)
+        self._model_all.progress_updated.connect(self.progress_updated)
         self._rows = list()
         self._row_count = 0
+        self._headers = list()
         self._column_count = 0
-
         self._search_text = ""
-
-        self._processed_row_indexes = list()
-        self._background_processor = RowBackgroundProcessor()
-        self._background_thread = move_to_new_thread(
-            self._background_processor,
-            signals=[
-                (self._background_processor.row_processed, self.row_processed)
-            ]
-        )
-        self.set_background_processing_callback(background_processing_callback)
+        self._search_indexes = dict()
+        self._sort_column = None
+        self._sort_reversed = False
 
     def reset_background_processing(self):
-        self._background_processor.reset()
-        self._processed_row_indexes = list()
+        self._model_all.reset_background_processing()
 
     def set_background_processing_callback(self, callback):
-        self._background_processor.set_callback(callback)
+        self._model_all.set_background_processing_callback(callback)
 
     @property
     def has_background_callback(self):
-        return self._background_processor.has_callback
+        return self._model_all.has_background_callback
 
     def start(self):
-        self._background_thread.start()
-        QCoreApplication.instance().aboutToQuit.connect(self.stop)
+        self._model_all.start()
 
     def stop(self):
-        self._background_processor.stop()
-
-    def row_processed(self, row):
-        self._processed_row_indexes.append(row.index)
-        self._rows[row.index] = row
-        self.dataChanged.emit(
-            self.index(row.index, 0),
-            self.index(row.index, self._column_count)
-        )
-        self.progress_updated.emit(len(self._processed_row_indexes))
+        self._model_all.stop()
 
     def set_headers(self, headers):
         if headers:
@@ -117,25 +56,37 @@ class RowTableModel(QAbstractTableModel):
             self._column_count = 0
 
     def set_rows(self, rows):
-        self.beginResetModel()
-
-        self._rows = list()
-        self._processed_row_indexes = list()
-        self._background_processor.reset()
-
-        for index, row in enumerate(rows):
-            new_row = row.copy(new_index=index)
-            new_row.build_cache()
-            self._rows.append(new_row)
-            if self._background_processor.has_callback:
-                self._background_processor.add_row(new_row)
-
-        self._row_count = len(self._rows)
-
-        self.endResetModel()
+        self._model_all.set_rows(rows)
+        self.perform_search()
 
     def set_search_text(self, text):
-        self._search_text = text
+        self._search_text = text.lower()
+        self.perform_search()
+
+    def perform_search(self):
+        self.beginResetModel()
+        self._rows = list()
+
+        for row in self._model_all.rows:
+            if self._search_text in row.search_cache:
+                self._rows.append(row)
+
+        self._sort()
+
+        self._row_count = len(self._rows)
+        self.endResetModel()
+
+    def _row_updated(self, row):
+        self.perform_search()
+        index = self._search_indexes.get(row.index, -1)
+        self.dataChanged.emit(
+            self.index(0, index),
+            self.index(self._column_count, index)
+        )
+
+    @property
+    def progress_max(self):
+        return self._model_all.row_count
 
     def rowCount(self, parent=None):
         return self._row_count
@@ -151,13 +102,33 @@ class RowTableModel(QAbstractTableModel):
         row_index = index.row()
         column_index = index.column()
 
-        if role == Qt.DisplayRole and \
-                self._background_processor.has_callback and \
-                row_index not in self._processed_row_indexes:
-            self._background_processor.add_row(self._rows[row_index])
+        if role == Qt.DisplayRole:
+            self._model_all.add_row_for_processing(self._rows[row_index])
 
         data_type = self._ROLES.get(role)
         if data_type is None:
             return
 
         return self._rows[row_index].cells[column_index][data_type]
+
+    def _build_seach_indexes(self):
+        self._search_indexes = dict()
+        for index, row in enumerate(self._rows):
+            self._search_indexes[row.index] = index
+
+    def _sort(self):
+        if self._sort_column is None:
+            return
+
+        def sort(row):
+            return row.cells[self._sort_column][0]
+
+        self._rows = sorted(self._rows, key=sort, reverse=self._sort_reversed)
+
+    def sort(self, column, order=Qt.AscendingOrder):
+        self.layoutAboutToBeChanged.emit()
+        self._sort_column = column
+        self._sort_reversed = order == Qt.DescendingOrder
+        self._sort()
+        self._build_seach_indexes()
+        self.layoutChanged.emit()

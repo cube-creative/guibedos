@@ -21,6 +21,7 @@ class RowTableWidget(QWidget):
         self.search_bar.textChanged.connect(self._search_text_changed)
         self.table_view = RowTableView(auto_resize, single_row_select, context_menu_callback, last_column_stretch)
         self.progress_bar = QProgressBar()
+        self.model = None
 
         layout = QGridLayout()
         layout.setContentsMargins(0, 0, 0, 0)
@@ -32,6 +33,7 @@ class RowTableWidget(QWidget):
         self.setLayout(layout)
 
     def set_model(self, model):
+        self.model = model
         self.table_view.setModel(model)
         model.modelReset.connect(self._set_progress_maximum)
         model.progress_updated.connect(self._update_progress)
@@ -39,10 +41,10 @@ class RowTableWidget(QWidget):
         self.progress_bar.setVisible(model.has_background_callback)
 
     def _search_text_changed(self, text):
-        self.table_view.model().set_search_text(text)
+        self.model.set_search_text(text)
 
     def _set_progress_maximum(self):
-        self.progress_bar.setMaximum(self.table_view.model().rowCount())  # do better ?
+        self.progress_bar.setMaximum(self.model.progress_max)  # do better ?
 
     def _update_progress(self, value):
         self.progress_bar.setValue(value)

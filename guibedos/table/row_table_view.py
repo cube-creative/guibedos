@@ -39,6 +39,7 @@ class RowTableView(QTableView):
             raise TypeError("Given model must be a RowTableModel")
 
         QTableView.setModel(self, model)
+
         if self._auto_resize:
             self.model().modelReset.connect(self.resizeColumnsToContents)
             self.resizeColumnsToContents()
@@ -46,3 +47,6 @@ class RowTableView(QTableView):
     def resizeColumnsToContents(self):
         QTableView.resizeColumnsToContents(self)
         self.model().reset_background_processing()
+
+    def _begin(self):
+        print("a")
