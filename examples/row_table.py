@@ -23,7 +23,10 @@ def process_row(row):
 def make_data(row_count):
     rows = list()
     colors = [None, (0, 255, 255), (255, 255, 0), (255, 0, 255), (255, 0, 0), (0, 255, 0), (0, 0, 255)]
-    words = ["Word", "War", "Why", "Jambon", "Beurre", "Pomme", "Lenalol", "Pulene"]
+    words = [
+        "Word", "War", "Why", "Jambon", "Beurre", "Pomme", "Lenalol", "Pulene",
+        "Monde", "Guerre", "Pourquoi", "Ham", "Butter", "Apple", "Imaig", "Pouer"
+    ]
     processed_words = ["Apathie", "Finance", "Usul", "Gataz", "Arnault", "Ponpon"]
 
     for i in range(row_count):
@@ -52,7 +55,7 @@ if __name__ == '__main__':
         background_processing_callback=process_row
     )
     model.set_headers(['Header', 'are', 'set', 'here', 'Computed data here'])
-    model.set_rows(make_data(1000))
+    model.set_rows(make_data(200))
     model.start()
 
     vue.set_model(model)

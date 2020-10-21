@@ -124,11 +124,11 @@ class RowTableModel(QAbstractTableModel):
             return row.cells[self._sort_column][0]
 
         self._rows = sorted(self._rows, key=sort, reverse=self._sort_reversed)
+        self._build_seach_indexes()
 
     def sort(self, column, order=Qt.AscendingOrder):
         self.layoutAboutToBeChanged.emit()
         self._sort_column = column
         self._sort_reversed = order == Qt.DescendingOrder
         self._sort()
-        self._build_seach_indexes()
         self.layoutChanged.emit()
