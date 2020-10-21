@@ -1,3 +1,4 @@
+from PySide2.QtGui import QColor
 
 
 class Row:
@@ -10,7 +11,7 @@ class Row:
     [Display role, foreground color, background color]
     ```
 
-    Color are a 0-255 3-items tuple `(0, 255, 128)`
+    Color are a 0-255 RGB/RGBA tuple `(0, 255, 128)` or `(0, 255, 128, 128)`
 
     :cells: list of tuples
     :data: user data, not displayed
@@ -21,7 +22,33 @@ class Row:
         self.cells = cells
         self.search_cache = ""
 
-        self._build_cache()
+    def copy(self, new_index=None):
+        if new_index is None:
+            new_index = self.index
 
-    def _build_cache(self):
+        return Row(self.cells, self.data, new_index)
+
+    def build_cache(self):
         self.search_cache = " ".join('{}'.format(cell[0]) for cell in self.cells)
+        self.cells = [self._cell_cache(cell) for cell in self.cells]
+
+    @staticmethod
+    def _cell_cache(cell):
+        display = cell[0]
+        foreground = Row._ensure_qcolor(cell[1])
+        background = Row._ensure_qcolor(cell[2])
+        return [display, foreground, background]
+
+    @staticmethod
+    def _ensure_qcolor(value):
+        if not value:
+            return None
+        elif not isinstance(value, QColor):
+            return QColor(*value)
+        return value
+
+    def __repr__(self):
+        return "<Row(index={}, cells={})>".format(
+            self.index,
+            self.cells
+        )

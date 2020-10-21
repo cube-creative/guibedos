@@ -1,10 +1,9 @@
-from PySide2.QtGui import QColor
 from PySide2.QtCore import Qt, QAbstractTableModel, Signal, QThread, QCoreApplication
 from guibedos.threading import Threadable, move_to_new_thread
-from .row import Row
 
 
 class RowBackgroundProcessor(Threadable):
+    SLEEP_MS = 20
     row_processed = Signal(object)
 
     def __init__(self, parent=None):
@@ -34,17 +33,22 @@ class RowBackgroundProcessor(Threadable):
 
         row = self._rows.pop()
         if row.index not in self._processed_row_indexes:
-            self.row_processed.emit(self._process_callback(row))
-            self._processed_row_indexes.append(row.index)
+            new_row = self._process_callback(row)
+            new_row.build_cache()
 
-        self._remove_already_loaded()
+            self.row_processed.emit(new_row)
+            self._processed_row_indexes.append(new_row.index)
 
-        QThread.msleep(20)
+            self._cleanup(row)
 
-    def _remove_already_loaded(self):
-        for row in reversed(self._rows):
-            if row.index in self._processed_row_indexes:
-                self._rows.pop()
+        QThread.msleep(self.SLEEP_MS)
+
+    def _cleanup(self, row):
+        while True:
+            try:
+                self._rows.remove(row)
+            except ValueError:
+                break
 
 
 class RowTableModel(QAbstractTableModel):
@@ -56,6 +60,7 @@ class RowTableModel(QAbstractTableModel):
         Qt.BackgroundRole: BACKGROUND,
         Qt.ForegroundRole: FOREGROUND
     }
+    progress_updated = Signal(int)
 
     def __init__(self, background_processing_callback=None, parent=None):
         QAbstractTableModel.__init__(self, parent)
@@ -83,18 +88,16 @@ class RowTableModel(QAbstractTableModel):
     def set_background_processing_callback(self, callback):
         self._background_processor.set_callback(callback)
 
+    @property
+    def has_background_callback(self):
+        return self._background_processor.has_callback
+
     def start(self):
         self._background_thread.start()
         QCoreApplication.instance().aboutToQuit.connect(self.stop)
 
     def stop(self):
         self._background_processor.stop()
-
-    @staticmethod
-    def create_qcolors(cell):
-        background = QColor(*cell[1]) if cell[1] else None
-        foreground = QColor(*cell[2]) if cell[2] else None
-        return [cell[0], background, foreground]
 
     def row_processed(self, row):
         self._processed_row_indexes.append(row.index)
@@ -103,6 +106,7 @@ class RowTableModel(QAbstractTableModel):
             self.index(row.index, 0),
             self.index(row.index, self._column_count)
         )
+        self.progress_updated.emit(len(self._processed_row_indexes))
 
     def set_headers(self, headers):
         if headers:
@@ -114,27 +118,20 @@ class RowTableModel(QAbstractTableModel):
 
     def set_rows(self, rows):
         self.beginResetModel()
-        if rows:
-            self._rows = list()
-            self._background_processor.reset()
-            self._processed_row_indexes = list()
 
-            for index, row in enumerate(rows):
-                new_row = Row(
-                    cells=[self.create_qcolors(cell) for cell in row.cells],
-                    data=row.data,
-                    index=index
-                )
-                self._rows.append(new_row)
+        self._rows = list()
+        self._processed_row_indexes = list()
+        self._background_processor.reset()
 
-            self._row_count = len(self._rows)
+        for index, row in enumerate(rows):
+            new_row = row.copy(new_index=index)
+            new_row.build_cache()
+            self._rows.append(new_row)
+            if self._background_processor.has_callback:
+                self._background_processor.add_row(new_row)
 
-        else:
-            self._rows = list()
-            self._background_processor.reset()
-            self._processed_row_indexes = list()
+        self._row_count = len(self._rows)
 
-            self._row_count = 0
         self.endResetModel()
 
     def set_search_text(self, text):
