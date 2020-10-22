@@ -1,5 +1,5 @@
-from Qt.QtWidgets import QTableView, QAbstractItemView
-from Qt.QtCore import Qt
+from PySide2.QtCore import Qt
+from PySide2.QtWidgets import QTableView, QAbstractItemView
 from .row_table_model import RowTableModel
 
 
@@ -33,20 +33,19 @@ class RowTableView(QTableView):
 
         self._auto_resize = auto_resize
         self._single_row_select = single_row_select
+        self._model = None
 
     def setModel(self, model):
         if not isinstance(model, RowTableModel):
             raise TypeError("Given model must be a RowTableModel")
 
         QTableView.setModel(self, model)
+        self._model = model
 
         if self._auto_resize:
-            self.model().modelReset.connect(self.resizeColumnsToContents)
+            self._model.modelReset.connect(self.resizeColumnsToContents)
             self.resizeColumnsToContents()
 
     def resizeColumnsToContents(self):
         QTableView.resizeColumnsToContents(self)
-        self.model().reset_background_processing()
-
-    def _begin(self):
-        print("a")
+        self._model.reset_background_processing()

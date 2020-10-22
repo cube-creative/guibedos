@@ -105,13 +105,16 @@ class RowTableModel(QAbstractTableModel):
         if role == Qt.DisplayRole:
             self._model_all.add_row_for_processing(self._rows[row_index])
 
+        elif role == Qt.UserRole:
+            return self._rows[row_index]
+
         data_type = self._ROLES.get(role)
         if data_type is None:
             return
 
         return self._rows[row_index].cells[column_index][data_type]
 
-    def _build_seach_indexes(self):
+    def _build_search_indexes(self):
         self._search_indexes = dict()
         for index, row in enumerate(self._rows):
             self._search_indexes[row.index] = index
@@ -121,10 +124,10 @@ class RowTableModel(QAbstractTableModel):
             return
 
         def sort(row):
-            return row.cells[self._sort_column][0]
+            return row.cells[self._sort_column][self.DISPLAY]
 
         self._rows = sorted(self._rows, key=sort, reverse=self._sort_reversed)
-        self._build_seach_indexes()
+        self._build_search_indexes()
 
     def sort(self, column, order=Qt.AscendingOrder):
         self.layoutAboutToBeChanged.emit()

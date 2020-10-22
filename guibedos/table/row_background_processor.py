@@ -3,7 +3,7 @@ from guibedos.threading import Threadable
 
 
 class RowBackgroundProcessor(Threadable):
-    SLEEP_MS = 10
+    SLEEP_MS = 20
     row_processed = Signal(object)
 
     def __init__(self, parent=None):
@@ -39,7 +39,7 @@ class RowBackgroundProcessor(Threadable):
             self.row_processed.emit(new_row)
             self._processed_row_indexes.append(new_row.index)
 
-            self._cleanup(row)
+        self._cleanup(row)
 
         QThread.msleep(self.SLEEP_MS)
 
