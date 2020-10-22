@@ -1,3 +1,5 @@
+import sys
+import traceback
 from PySide2.QtCore import Signal, QThread
 from guibedos.threading import Threadable
 
@@ -33,7 +35,11 @@ class RowBackgroundProcessor(Threadable):
 
         row = self._rows.pop()
         if row.index not in self._processed_row_indexes:
-            new_row = self._process_callback(row)
+            try:
+                new_row = self._process_callback(row)
+            except Exception as e:
+                traceback.print_exception(*sys.exc_info())
+
             new_row.build_cache()
 
             self.row_processed.emit(new_row)

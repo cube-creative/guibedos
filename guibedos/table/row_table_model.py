@@ -60,7 +60,7 @@ class RowTableModel(QAbstractTableModel):
         self.perform_search()
 
     def set_search_text(self, text):
-        self._search_text = text.lower()
+        self._search_text = text.lower().split()
         self.perform_search()
 
     def perform_search(self):
@@ -68,8 +68,9 @@ class RowTableModel(QAbstractTableModel):
         self._rows = list()
 
         for row in self._model_all.rows:
-            if self._search_text in row.search_cache:
-                self._rows.append(row)
+            if any(item not in row.search_cache for item in self._search_text):
+                continue
+            self._rows.append(row)
 
         self._sort()
 
@@ -77,7 +78,6 @@ class RowTableModel(QAbstractTableModel):
         self.endResetModel()
 
     def _row_updated(self, row):
-        self.perform_search()
         index = self._search_indexes.get(row.index, -1)
         self.dataChanged.emit(
             self.index(0, index),
