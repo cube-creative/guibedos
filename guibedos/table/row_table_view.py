@@ -45,7 +45,3 @@ class RowTableView(QTableView):
         if self._auto_resize:
             self._model.modelReset.connect(self.resizeColumnsToContents)
             self.resizeColumnsToContents()
-
-    def resizeColumnsToContents(self):
-        QTableView.resizeColumnsToContents(self)
-        self._model.reset_background_processing()
