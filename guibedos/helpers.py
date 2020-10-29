@@ -12,16 +12,24 @@ class Hourglass:
     ````
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
+        if parent is None:
+            parent = QtWidgets.QApplication.instance()
         self._parent = parent
 
     def __enter__(self):
         QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
-        self._parent.setEnabled(False)
+        try:
+            self._parent.setEnabled(False)
+        except AttributeError:
+            pass
         QtWidgets.QApplication.processEvents()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self._parent.setEnabled(True)
+        try:
+            self._parent.setEnabled(True)
+        except AttributeError:
+            pass
         QtWidgets.QApplication.restoreOverrideCursor()
         QtWidgets.QApplication.processEvents()
 

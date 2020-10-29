@@ -1,6 +1,16 @@
-from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QTableView, QAbstractItemView
+from PySide2.QtCore import Qt, QMargins
+from PySide2.QtWidgets import QTableView, QAbstractItemView, QStyledItemDelegate
 from .row_table_model import RowTableModel
+
+
+CELL_PADDING = 12
+
+
+class CellDelegate(QStyledItemDelegate):
+    def sizeHint(self, option, index):
+        return QStyledItemDelegate.sizeHint(self, option, index).grownBy(
+            QMargins(CELL_PADDING, CELL_PADDING, CELL_PADDING, CELL_PADDING
+        ))
 
 
 class RowTableView(QTableView):
@@ -27,6 +37,10 @@ class RowTableView(QTableView):
         self.verticalHeader().hide()
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.horizontalHeader().setStretchLastSection(last_column_stretch)
+        self.setHorizontalScrollMode(QTableView.ScrollPerPixel)
+        self.setItemDelegate(CellDelegate())
+
+        self.verticalHeader().setDefaultSectionSize(self.verticalHeader().defaultSectionSize() + CELL_PADDING)
 
         if context_menu_callback is not None:
             self.customContextMenuRequested.connect(context_menu_callback)
@@ -43,5 +57,7 @@ class RowTableView(QTableView):
         self._model = model
 
         if self._auto_resize:
+            self._model.modelReset.connect(self.resizeRowsToContents)
             self._model.modelReset.connect(self.resizeColumnsToContents)
             self.resizeColumnsToContents()
+            self.resizeRowsToContents()
