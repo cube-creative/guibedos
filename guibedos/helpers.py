@@ -11,16 +11,25 @@ class Hourglass:
         # do lengthy stuff
     ````
     """
-    def __init__(self, parent):
+
+    def __init__(self, parent=None):
+        if parent is None:
+            parent = QtWidgets.QApplication.instance()
         self._parent = parent
 
     def __enter__(self):
         QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
-        self._parent.setEnabled(False)
+        try:
+            self._parent.setEnabled(False)
+        except AttributeError:
+            pass
         QtWidgets.QApplication.processEvents()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self._parent.setEnabled(True)
+        try:
+            self._parent.setEnabled(True)
+        except AttributeError:
+            pass
         QtWidgets.QApplication.restoreOverrideCursor()
         QtWidgets.QApplication.processEvents()
 
@@ -52,3 +61,21 @@ def update_combo(combo, items, select=None):
     else:
         combo.blockSignals(False)
         combo.setCurrentIndex(combo.findText(current))
+
+
+class WindowPosition:
+    @staticmethod
+    def restore(widget, data):
+        if data['maximized']:
+            widget.setWindowState(QtCore.Qt.WindowMaximized)
+        else:
+            geometry = QtCore.QRect()
+            geometry.setCoords(*data['geometry'])
+            widget.setGeometry(geometry)
+
+    @staticmethod
+    def save(widget):
+        return {
+            'geometry': widget.geometry().getCoords(),
+            'maximized': bool(widget.windowState() & QtCore.Qt.WindowMaximized)
+        }
