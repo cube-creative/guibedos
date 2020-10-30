@@ -1,4 +1,5 @@
 from PySide2.QtCore import Qt, QAbstractTableModel, Signal
+from .row import Row
 from .row_model_all import RowAllModel
 
 
@@ -8,13 +9,10 @@ class RowTableModel(QAbstractTableModel):
     """
     progress_updated = Signal(int)
 
-    DISPLAY = 0
-    BACKGROUND = 1
-    FOREGROUND = 2
     _ROLES = {
-        Qt.DisplayRole: DISPLAY,
-        Qt.BackgroundRole: BACKGROUND,
-        Qt.ForegroundRole: FOREGROUND
+        Qt.DisplayRole: Row.DISPLAY,
+        Qt.BackgroundRole: Row.BACKGROUND,
+        Qt.ForegroundRole: Row.FOREGROUND
     }
 
     def __init__(self, background_processing_callback=None, parent=None):
@@ -124,7 +122,7 @@ class RowTableModel(QAbstractTableModel):
             return
 
         def sort(row):
-            return row.cells[self._sort_column][self.DISPLAY]
+            return row.cells[self._sort_column][Row.SORT]
 
         self._rows = sorted(self._rows, key=sort, reverse=self._sort_reversed)
         self._build_search_indexes()
@@ -132,6 +130,6 @@ class RowTableModel(QAbstractTableModel):
     def sort(self, column, order=Qt.AscendingOrder):
         self.layoutAboutToBeChanged.emit()
         self._sort_column = column
-        self._sort_reversed = order == Qt.DescendingOrder
+        self._sort_reversed = order == Qt.AscendingOrder
         self._sort()
         self.layoutChanged.emit()

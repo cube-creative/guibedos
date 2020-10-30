@@ -16,6 +16,11 @@ class Row:
     :cells: list of tuples
     :data: user data, not displayed
     """
+    DISPLAY = 0
+    BACKGROUND = 1
+    FOREGROUND = 2
+    SORT = 3
+
     def __init__(self, cells, data, index=-1):
         self.index = index
         self.data = data
@@ -29,15 +34,16 @@ class Row:
         return Row(self.cells, self.data, new_index)
 
     def build_cache(self):
-        self.search_cache = " ".join('{}'.format(cell[0]).lower() for cell in self.cells)
+        self.search_cache = " ".join('{}'.format(cell[Row.DISPLAY]).lower() for cell in self.cells)
         self.cells = [self._cell_cache(cell) for cell in self.cells]
 
     @staticmethod
     def _cell_cache(cell):
-        display = cell[0]
-        foreground = Row._ensure_qcolor(cell[1])
-        background = Row._ensure_qcolor(cell[2])
-        return [display, foreground, background]
+        display = cell[Row.DISPLAY]
+        foreground = Row._ensure_qcolor(cell[Row.FOREGROUND])
+        background = Row._ensure_qcolor(cell[Row.BACKGROUND])
+        sort = cell[Row.SORT] if cell[Row.SORT] is not None else 0
+        return [display, background, foreground, sort]
 
     @staticmethod
     def _ensure_qcolor(value):
