@@ -70,3 +70,21 @@ class RowTableWidget(QWidget):
         with Hourglass():
             self.table_view.resizeColumnsToContents()
             self.table_view.resizeRowsToContents()
+
+    def state(self):
+        header_sizes = list()
+        header = self.table_view.horizontalHeader()
+        for section_index in range(header.count()):
+            header_sizes.append(header.sectionSize(section_index))
+
+        return {
+            'header_sizes': header_sizes,
+            'search_text': self.search_bar.text()
+        }
+
+    def load_state(self, state):
+        header = self.table_view.horizontalHeader()
+        for section_index, size in enumerate(state['header_sizes']):
+            header.resizeSection(section_index, size)
+
+        self.search_bar.setText(state['search_text'])

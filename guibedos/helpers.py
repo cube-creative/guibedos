@@ -61,3 +61,15 @@ def update_combo(combo, items, select=None):
     else:
         combo.blockSignals(False)
         combo.setCurrentIndex(combo.findText(current))
+
+
+class Geometry:
+    @staticmethod
+    def from_json(json):
+        geometry = QtCore.QRect()
+        geometry.setCoords(*json)
+        return geometry
+
+    @staticmethod
+    def to_json(widget):
+        return widget.geometry().getCoords()
