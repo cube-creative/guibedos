@@ -3,6 +3,7 @@ This demonstrates the usage of a QTableView associated width a QAbstractTableMod
 
 Presented data is organized in rows
 """
+from PySide2.QtCore import Signal, Qt
 from PySide2.QtWidgets import QWidget, QGridLayout, QLineEdit, QProgressBar, QPushButton
 from .row_table_view import RowTableView
 from guibedos.helpers import Hourglass
@@ -12,6 +13,8 @@ SEARCHBAR_HEIGHT = 24
 
 
 class RowTableWidget(QWidget):
+    double_clicked = Signal(object)
+
     def __init__(self,
         auto_resize=False,
         single_row_select=True,
@@ -23,6 +26,7 @@ class RowTableWidget(QWidget):
         self.model = None
 
         self.table_view = RowTableView(auto_resize, single_row_select, context_menu_callback, last_column_stretch)
+        self.table_view.doubleClicked.connect(self._double_clicked)
 
         self.search_bar = QLineEdit()
         self.search_bar.setFixedHeight(SEARCHBAR_HEIGHT)
@@ -70,6 +74,10 @@ class RowTableWidget(QWidget):
         with Hourglass():
             self.table_view.resizeColumnsToContents()
             self.table_view.resizeRowsToContents()
+
+    def _double_clicked(self, index):
+        row = self.model.data(index, Qt.UserRole)
+        self.double_clicked.emit(row)
 
     def state(self):
         header_sizes = list()
