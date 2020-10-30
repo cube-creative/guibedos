@@ -87,9 +87,6 @@ class FlowLayout(QtWidgets.QLayout):
         for item in self.item_list:
             widget = item.widget()
 
-            if not widget.isVisible():
-                continue
-
             space_x = self.spacing() + widget.style().layoutSpacing(
                 QtWidgets.QSizePolicy.PushButton, QtWidgets.QSizePolicy.PushButton, QtCore.Qt.Horizontal
             )
