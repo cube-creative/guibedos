@@ -5,14 +5,41 @@ stages:
 variables:
   PYTHONPATH: "R:/deploy/cube/packages"
 
-release-lucet:
+isilon:
   stage: deploy
   tags: [deploy-windows]
   script:
-    - C:/cube/python3/python.exe -m releaselucet --staging --pip
+    - C:/cube/python3/python.exe c:/cube/scripts/mount-r.py
+    - C:/cube/python3/python.exe -m releaselucet --staging --pip --drive ISILON
+
+lyon:
+  stage: deploy
+  tags: [deploy-windows]
+  script:
+    - C:/cube/python3/python.exe c:/cube/scripts/mount-r.py
+    - C:/cube/python3/python.exe -m releaselucet --staging --pip --drive LYON
+
+stornext:
+  stage: deploy
+  tags: [deploy-windows]
+  script:
+    - C:/cube/python3/python.exe c:/cube/scripts/mount-r.py
+    - C:/cube/python3/python.exe -m releaselucet --staging --pip --drive STORNEXT
+
+ranch:
+  stage: deploy
+  tags: [deploy-windows]
+  script:
+    - C:/cube/python3/python.exe c:/cube/scripts/mount-r.py
+    - C:/cube/python3/python.exe -m releaselucet --staging --pip --drive RANCH
 
 docgen:
   stage: docgen
   tags: [docgenyco]
+  only:
+    refs:
+      - master
+    variables:
+      - $CI_PROJECT_NAMESPACE == "cube"
   script:
     - python -m docgenyco $CI_REPOSITORY_URL /home/documentation/production/devdoc/ "Developper documentation"

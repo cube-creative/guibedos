@@ -4,12 +4,15 @@ This demonstrates the usage of a QTableView associated width a QAbstractTableMod
 Presented data is organized in rows
 """
 from PySide2.QtCore import Signal, Qt
-from PySide2.QtWidgets import QWidget, QGridLayout, QLineEdit, QProgressBar, QPushButton
+from PySide2.QtWidgets import QWidget, QGridLayout, QLineEdit, QProgressBar, QPushButton, QLabel
 from .row_table_view import RowTableView
 from guibedos.helpers import Hourglass
 
 
 SEARCHBAR_HEIGHT = 24
+PROGRESSBAR_HEIGHT = 10
+STATUS_LABEL_WIDTH = 200
+STATUS_LABEL_MESSAGE = "{} rows ({} total)"
 
 
 class RowTableWidget(QWidget):
@@ -38,18 +41,23 @@ class RowTableWidget(QWidget):
         self.auto_size_button.clicked.connect(self._auto_size_clicked)
         self.auto_size_button.setToolTip("Auto size")
 
+        self.status_label = QLabel(STATUS_LABEL_MESSAGE.format(0, 0))
+        self.status_label.setFixedWidth(STATUS_LABEL_WIDTH)
+
         self.progress_bar = QProgressBar()
-        self.progress_bar.setFixedHeight(10)
+        self.progress_bar.setFixedHeight(PROGRESSBAR_HEIGHT)
         self.progress_bar.setFormat('')
 
         layout = QGridLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        layout.addWidget(self.search_bar)
-        layout.addWidget(self.auto_size_button, 0, 1)
-        layout.addWidget(self.table_view, 1, 0, 1, 2)
-        layout.addWidget(self.progress_bar, 2, 0, 1, 2)
+        layout.addWidget(self.search_bar, 0, 0, 1, 2)
+        layout.addWidget(self.auto_size_button, 0, 2)
+        layout.addWidget(self.table_view, 1, 0, 1, 3)
+        layout.addWidget(self.status_label, 2, 0)
+        layout.addWidget(self.progress_bar, 2, 1, 1, 2)
+        layout.setColumnStretch(1, 100)
 
         self.setLayout(layout)
 
@@ -57,8 +65,11 @@ class RowTableWidget(QWidget):
         self.model = model
         self.table_view.setModel(model)
         model.modelReset.connect(self._set_progress_maximum)
+        model.modelReset.connect(self._update_status)
         model.progress_updated.connect(self._update_progress)
+
         self._set_progress_maximum()
+        self._update_status()
         self.progress_bar.setVisible(model.has_background_callback)
 
     def _search_text_changed(self, text):
@@ -69,6 +80,11 @@ class RowTableWidget(QWidget):
 
     def _update_progress(self, value):
         self.progress_bar.setValue(value)
+
+    def _update_status(self):
+        self.status_label.setText(STATUS_LABEL_MESSAGE.format(
+            self.model.rowCount(), self.model.total_row_count
+        ))
 
     def _auto_size_clicked(self):
         with Hourglass():

@@ -29,6 +29,10 @@ class RowTableModel(QAbstractTableModel):
         self._sort_column = None
         self._sort_reversed = False
 
+    @property
+    def total_row_count(self):
+        return self._model_all.row_count
+
     def reset_background_processing(self):
         self._model_all.reset_background_processing()
 
