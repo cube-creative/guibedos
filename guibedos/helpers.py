@@ -63,13 +63,19 @@ def update_combo(combo, items, select=None):
         combo.setCurrentIndex(combo.findText(current))
 
 
-class Geometry:
+class WindowPosition:
     @staticmethod
-    def from_json(json):
-        geometry = QtCore.QRect()
-        geometry.setCoords(*json)
-        return geometry
+    def restore(widget, data):
+        if data['maximized']:
+            widget.setWindowState(QtCore.Qt.WindowMaximized)
+        else:
+            geometry = QtCore.QRect()
+            geometry.setCoords(*data['geometry'])
+            widget.setGeometry(geometry)
 
     @staticmethod
-    def to_json(widget):
-        return widget.geometry().getCoords()
+    def save(widget):
+        return {
+            'geometry': widget.geometry().getCoords(),
+            'maximized': bool(widget.windowState() & QtCore.Qt.WindowMaximized)
+        }
