@@ -14,7 +14,8 @@ def process_row(row):
     row.cells[4] = (
         'PROCESSED : {}'.format(row.data),
         (255, 0, 0, 150),
-        (255, 255, 255)
+        (255, 255, 255),
+        None
     )
 
     return row
@@ -31,11 +32,11 @@ def make_data(row_count):
 
     for i in range(row_count):
         rows.append(Row([
-            (random.choice(words), None, None),  # cell column 0
-            (random.choice(words), random.choice(colors), None),  # cell column 1
-            (random.choice(words), None, None),  # cell column 2
-            (random.choice(words), None, random.choice(colors)),  # cell column 3
-            ('...', None, None)  # cell column 4, will be computed in background
+            (random.choice(words), None, None, i),  # cell column 0
+            (random.choice(words), random.choice(colors), None, None),  # cell column 1
+            (random.choice(words), None, None, None),  # cell column 2
+            (random.choice(words), None, random.choice(colors), None),  # cell column 3
+            ('...', None, None, None)  # cell column 4, will be computed in background
         ], {
             "random_word": random.choice(processed_words)
         }))
