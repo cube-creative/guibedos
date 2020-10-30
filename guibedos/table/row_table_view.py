@@ -19,10 +19,12 @@ class RowTableView(QTableView):
         auto_resize=False,
         single_row_select=True,
         context_menu_callback=None,
-        last_column_stretch=True,
+        last_column_stretch=False,
         parent=None
     ):
         QTableView.__init__(self, parent)
+        self.setShowGrid(False)
+        self.setAlternatingRowColors(True)
         self.setSortingEnabled(True)
         self.setAttribute(Qt.WA_StyledBackground, True)
         self.setSelectionMode(
@@ -31,12 +33,9 @@ class RowTableView(QTableView):
         )
         self.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
-        self.horizontalHeader().setStretchLastSection(False)
-        self.setShowGrid(False)
-        self.setAlternatingRowColors(True)
+        self.horizontalHeader().setStretchLastSection(last_column_stretch)
         self.verticalHeader().hide()
         self.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.horizontalHeader().setStretchLastSection(last_column_stretch)
         self.setHorizontalScrollMode(QTableView.ScrollPerPixel)
         self.setItemDelegate(CellDelegate())
 
