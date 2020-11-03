@@ -90,3 +90,12 @@ def clear_layout(layout):
                 widget.deleteLater()
             else:
                 clear_layout(item.layout())
+
+def cursor_line_number(text_lines, cursor_position):
+    character_count = 0
+    for line, text in enumerate(text_lines):
+        character_count += len(text) + 1
+        if cursor_position < character_count:
+            return line
+
+    return len(text_lines)
