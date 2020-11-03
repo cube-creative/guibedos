@@ -1,19 +1,10 @@
 from Qt import QtWidgets
 from . import maker, handler
+from guibedos.helpers import clear_layout
 
 
 _ROOT_WIDGET = '_ROOT_WIDGET'
 
-
-def _clear_layout(layout):
-    if layout is not None:
-        while layout.count():
-            item = layout.takeAt(0)
-            widget = item.widget()
-            if widget is not None:
-                widget.deleteLater()
-            else:
-                _clear_layout(item.layout())
 
 
 class DeclarativeForm(QtWidgets.QWidget):
@@ -28,7 +19,7 @@ class DeclarativeForm(QtWidgets.QWidget):
             layout = QtWidgets.QVBoxLayout(self)
             layout.setContentsMargins(0, 0, 0, 0)
         else:
-            _clear_layout(self.layout())
+            clear_layout(self.layout())
 
         self.base_widget = maker.make_widget(root_property, self)
 

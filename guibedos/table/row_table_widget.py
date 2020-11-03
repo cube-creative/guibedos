@@ -3,14 +3,13 @@ This demonstrates the usage of a QTableView associated width a QAbstractTableMod
 
 Presented data is organized in rows
 """
-from PySide2.QtCore import Signal, Qt
-from PySide2.QtWidgets import QWidget, QGridLayout, QLineEdit, QProgressBar, QPushButton, QLabel
+from Qt.QtCore import Signal, Qt
+from Qt.QtWidgets import QWidget, QGridLayout, QLineEdit, QProgressBar, QPushButton, QLabel
 from .row_table_view import RowTableView
 from guibedos.helpers import Hourglass
 
 
 SEARCHBAR_HEIGHT = 24
-PROGRESSBAR_HEIGHT = 10
 STATUS_LABEL_WIDTH = 200
 STATUS_LABEL_MESSAGE = "{} rows ({} total)"
 
@@ -33,7 +32,7 @@ class RowTableWidget(QWidget):
 
         self.search_bar = QLineEdit()
         self.search_bar.setFixedHeight(SEARCHBAR_HEIGHT)
-        self.search_bar.textChanged.connect(self._search_text_changed)
+        self.search_bar.textChanged.connect(self.set_search_text)
         self.search_bar.setToolTip("Search bar")
 
         self.auto_size_button = QPushButton('<>')
@@ -45,7 +44,6 @@ class RowTableWidget(QWidget):
         self.status_label.setFixedWidth(STATUS_LABEL_WIDTH)
 
         self.progress_bar = QProgressBar()
-        self.progress_bar.setFixedHeight(PROGRESSBAR_HEIGHT)
         self.progress_bar.setFormat('')
 
         layout = QGridLayout()
@@ -72,7 +70,14 @@ class RowTableWidget(QWidget):
         self._update_status()
         self.progress_bar.setVisible(model.has_background_callback)
 
-    def _search_text_changed(self, text):
+    @property
+    def search_text(self):
+        return self.search_bar.text()
+
+    def set_search_text(self, text):
+        self.search_bar.blockSignals(True)
+        self.search_bar.setText(text)
+        self.search_bar.blockSignals(False)
         self.model.set_search_text(text)
 
     def _set_progress_maximum(self):

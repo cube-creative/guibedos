@@ -1,5 +1,5 @@
 from collections import Counter
-from PySide2.QtCore import Qt, QAbstractTableModel, Signal
+from Qt.QtCore import Qt, QAbstractTableModel, Signal
 from .row import Row
 from .row_model_all import RowAllModel
 

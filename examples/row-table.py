@@ -4,7 +4,7 @@ This demonstrates the usage of a QTableView associated width a QAbstractTableMod
 Presented data is organized in rows
 """
 import random
-from PySide2.QtWidgets import QApplication
+from Qt.QtWidgets import QApplication
 from guibedos.table import Row, RowTableModel, RowTableWidget
 
 
