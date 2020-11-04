@@ -4,8 +4,9 @@ This demonstrates the usage of a QTableView associated width a QAbstractTableMod
 Presented data is organized in rows
 """
 from Qt.QtCore import Signal, Qt
-from PySide2.QtWidgets import QGridLayout, QLineEdit, QProgressBar, QPushButton, QLabel, QFrame
+from Qt.QtWidgets import QGridLayout, QLineEdit, QProgressBar, QPushButton, QLabel, QFrame
 from .row_table_view import RowTableView
+from guibedos.widgets import Counters
 from guibedos.helpers import Hourglass
 
 
@@ -22,13 +23,20 @@ class RowTableWidget(QFrame):
         single_row_select=True,
         context_menu_callback=None,
         last_column_stretch=True,
+        has_counters=False,
         parent=None
     ):
         QFrame.__init__(self, parent)
+        self._has_counters = has_counters
+
         self.model = None
 
         self.table_view = RowTableView(auto_resize, single_row_select, context_menu_callback, last_column_stretch)
         self.table_view.doubleClicked.connect(self._double_clicked)
+
+        if has_counters:
+            self.counters = Counters()
+            self.counters.button_clicked.connect(self._counter_clicked)
 
         self.search_bar = QLineEdit()
         self.search_bar.setFixedHeight(SEARCHBAR_HEIGHT)
@@ -47,14 +55,17 @@ class RowTableWidget(QFrame):
         self.progress_bar.setFormat('')
 
         layout = QGridLayout()
-        #layout.setContentsMargins(0, 0, 0, 0)
 
-        layout.addWidget(self.search_bar, 0, 0, 1, 2)
-        layout.addWidget(self.auto_size_button, 0, 2)
-        layout.addWidget(self.table_view, 1, 0, 1, 3)
+        layout.addWidget(self.search_bar, 0, 0, 1, 3)
+        layout.addWidget(self.auto_size_button, 0, 3)
+        if has_counters:
+            layout.addWidget(self.counters, 1, 0, 1, 2)
+            layout.addWidget(self.table_view, 1, 2, 1, 2)
+        else:
+            layout.addWidget(self.table_view, 1, 0, 1, 4)
         layout.addWidget(self.status_label, 2, 0)
-        layout.addWidget(self.progress_bar, 2, 1, 1, 2)
-        layout.setColumnStretch(1, 100)
+        layout.addWidget(self.progress_bar, 2, 1, 1, 3)
+        layout.setColumnStretch(2, 100)
 
         self.setLayout(layout)
 
@@ -63,6 +74,9 @@ class RowTableWidget(QFrame):
         self.table_view.setModel(model)
         model.modelReset.connect(self._set_progress_maximum)
         model.modelReset.connect(self._update_status)
+        if self._has_counters:
+            model.modelReset.connect(self._update_counters)
+            self._update_counters()
         model.progress_updated.connect(self._update_progress)
 
         self._set_progress_maximum()
@@ -89,6 +103,13 @@ class RowTableWidget(QFrame):
         self.status_label.setText(STATUS_LABEL_MESSAGE.format(
             self.model.rowCount(), self.model.total_row_count
         ))
+
+    def _counter_clicked(self, entry, checked_buttons):
+        entries = [entry for entry, active in checked_buttons.items() if active]
+        self.model.set_search_counters(entries)
+
+    def _update_counters(self):
+        self.counters.set(self.model.counters)
 
     def _auto_size_clicked(self):
         with Hourglass():

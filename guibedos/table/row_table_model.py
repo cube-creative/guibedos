@@ -25,7 +25,8 @@ class RowTableModel(QAbstractTableModel):
         self._row_count = 0
         self._headers = list()
         self._column_count = 0
-        self._search_text = ""
+        self._search_items_text = []
+        self._search_items_counters = []
         self._search_indexes = dict()
         self._sort_column = None
         self._sort_reversed = False
@@ -64,7 +65,11 @@ class RowTableModel(QAbstractTableModel):
         self.perform_search()
 
     def set_search_text(self, text):
-        self._search_text = text.lower().split()
+        self._search_items_text = text.lower().split()
+        self.perform_search()
+
+    def set_search_counters(self, entries):
+        self._search_items_counters = [entry.lower() for entry in entries]
         self.perform_search()
 
     def reset_counters(self):
@@ -76,8 +81,9 @@ class RowTableModel(QAbstractTableModel):
         self.reset_counters()
         self._rows = list()
 
+        search = self._search_items_text + self._search_items_counters
         for row in self._model_all.rows:
-            if any(item not in row.search_cache for item in self._search_text):
+            if any(item not in row.search_cache for item in search):
                 continue
 
             for index, counter in self._counters.items():
