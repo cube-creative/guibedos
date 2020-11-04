@@ -6,6 +6,7 @@ from Qt.QtGui import QFont
 from Qt.QtWidgets import QApplication, QWidget, QGridLayout, QPlainTextEdit, QSplitter, QPushButton
 from guibedos.helpers import WindowPosition
 from .variables import Variables
+from .highlighter import TemplateHighlighter
 
 
 EDITOR_STATE = '.csseditor'
@@ -35,6 +36,7 @@ class CSSEditor:
         self.template.setFont(self.font)
         self.template.textChanged.connect(self._template_changed)
         self.template.textChanged.connect(self._render_and_apply)
+        self._highlighter = TemplateHighlighter(self.template.document())
 
         self.save = QPushButton('Save stylesheet')
         self.save.clicked.connect(self._save_stylesheet)

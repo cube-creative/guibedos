@@ -6,11 +6,9 @@ from guibedos.helpers import clear_layout
 _ROOT_WIDGET = '_ROOT_WIDGET'
 
 
-
-class DeclarativeForm(QtWidgets.QWidget):
-
+class DeclarativeForm(QtWidgets.QFrame):
     def __init__(self, root_property, parent=None, handler=None):
-        QtWidgets.QWidget.__init__(self, parent)
+        QtWidgets.QFrame.__init__(self, parent)
         self.handler = handler
         self.reload(root_property)
 
