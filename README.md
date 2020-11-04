@@ -10,11 +10,12 @@ If you don't plan on using Qt.py, you must use PyQt5/PySide2 (`from Qt import Qt
 
 ## Themes
 
-:warning: The themes will probably be deprecated in the near future :warning:
+:warning: Themes will probably be deprecated in the near future :warning:
 
 It is common to apply a custom CSS stylesheet to a QApplication.
 
-This module allows to load 6 different themes, borrowed from the [FreeCAD project](https://github.com/FreeCAD/FreeCAD/tree/master/src/Gui/Stylesheets)
+This module allows to load 6 different themes, 
+borrowed from the [FreeCAD project](https://github.com/FreeCAD/FreeCAD/tree/master/src/Gui/Stylesheets)
 
 Stylesheets and icons are provided
 
@@ -99,7 +100,8 @@ The "flow" layout is not available in native Qt.
 
 Allows to layout in 2D a 1D array of widgets
 
-_This widget was borrowed then adapted from [PySide Examples](https://github.com/PySide/Examples/blob/master/examples/layouts/flowlayout.py)_
+_This widget was borrowed then adapted 
+from [PySide Examples](https://github.com/PySide/Examples/blob/master/examples/layouts/flowlayout.py)_
 
 ````python
 from Qt.QtWidgets import QPushButton
