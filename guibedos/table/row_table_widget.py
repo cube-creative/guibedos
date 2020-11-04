@@ -4,17 +4,17 @@ This demonstrates the usage of a QTableView associated width a QAbstractTableMod
 Presented data is organized in rows
 """
 from Qt.QtCore import Signal, Qt
-from Qt.QtWidgets import QWidget, QGridLayout, QLineEdit, QProgressBar, QPushButton, QLabel
+from PySide2.QtWidgets import QGridLayout, QLineEdit, QProgressBar, QPushButton, QLabel, QFrame
 from .row_table_view import RowTableView
 from guibedos.helpers import Hourglass
 
 
 SEARCHBAR_HEIGHT = 24
-STATUS_LABEL_WIDTH = 200
+STATUS_LABEL_WIDTH = 150
 STATUS_LABEL_MESSAGE = "{} rows ({} total)"
 
 
-class RowTableWidget(QWidget):
+class RowTableWidget(QFrame):
     double_clicked = Signal(object)
 
     def __init__(self,
@@ -24,7 +24,7 @@ class RowTableWidget(QWidget):
         last_column_stretch=True,
         parent=None
     ):
-        QWidget.__init__(self, parent)
+        QFrame.__init__(self, parent)
         self.model = None
 
         self.table_view = RowTableView(auto_resize, single_row_select, context_menu_callback, last_column_stretch)
@@ -47,8 +47,7 @@ class RowTableWidget(QWidget):
         self.progress_bar.setFormat('')
 
         layout = QGridLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
+        #layout.setContentsMargins(0, 0, 0, 0)
 
         layout.addWidget(self.search_bar, 0, 0, 1, 2)
         layout.addWidget(self.auto_size_button, 0, 2)

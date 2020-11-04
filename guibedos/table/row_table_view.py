@@ -3,7 +3,7 @@ from Qt.QtWidgets import QTableView, QAbstractItemView, QStyledItemDelegate
 from .row_table_model import RowTableModel
 
 
-CELL_PADDING = 12
+CELL_PADDING = 8
 
 
 class CellDelegate(QStyledItemDelegate):

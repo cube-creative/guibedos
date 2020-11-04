@@ -24,7 +24,7 @@ class CSSEditor:
         self.font = QFont('monospace')
 
         self.main_window = QWidget()
-        self.main_window.setWindowFlags(Qt.Tool | Qt.WindowStaysOnTopHint)
+        self.main_window.setWindowFlags(Qt.Tool)
         self.main_window.setWindowTitle("CSS Editor - " + self.project_name)
 
         self.variables = Variables()

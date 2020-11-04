@@ -6,12 +6,13 @@ from guibedos.helpers import clear_layout
 
 class Counters(QScrollArea):
     button_clicked = Signal(object, object)
-    SPACING = 1
+    SPACING = 2
 
     def __init__(self, parent=None):
         QScrollArea.__init__(self, parent)
         self.setWidgetResizable(True)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
 
         self._layout = QVBoxLayout()
         self._layout.setContentsMargins(0, 0, 0, 0)
