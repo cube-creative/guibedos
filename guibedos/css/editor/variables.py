@@ -111,19 +111,3 @@ class Variables(QWidget):
         self.table.removeRow(name_item.row())
 
         self.changed.emit(self.variables)
-
-
-if __name__ == '__main__':
-    from PySide2.QtWidgets import QApplication
-    app = QApplication([])
-
-    variables = Variables()
-    variables.changed.connect(print)
-    variables.show()
-
-    variables.variables = {
-        'Jean': '[255, 128, 31]',
-        'Pierre': '0px'
-    }
-
-    app.exec_()

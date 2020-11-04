@@ -1,9 +1,9 @@
 import os
 import json
 import jinja2
-from PySide2.QtCore import Qt
-from PySide2.QtGui import QFont
-from PySide2.QtWidgets import QApplication, QWidget, QGridLayout, QPlainTextEdit, QLabel, QSplitter, QPushButton
+from Qt.QtCore import Qt
+from Qt.QtGui import QFont
+from Qt.QtWidgets import QApplication, QWidget, QGridLayout, QPlainTextEdit, QSplitter, QPushButton
 from guibedos.helpers import WindowPosition
 from .variables import Variables
 
@@ -22,9 +22,9 @@ class CSSEditor:
         self.project_name = project_name
 
         self.font = QFont('monospace')
-        self.font.setPointSize(11)
 
         self.main_window = QWidget()
+        self.main_window.setWindowFlags(Qt.Tool | Qt.WindowStaysOnTopHint)
         self.main_window.setWindowTitle("CSS Editor - " + self.project_name)
 
         self.variables = Variables()
@@ -39,8 +39,6 @@ class CSSEditor:
         self.save = QPushButton('Save stylesheet')
         self.save.clicked.connect(self._save_stylesheet)
 
-        self.status = QLabel()
-
         self.splitter = QSplitter()
         self.splitter.setOrientation(Qt.Vertical)
         self.splitter.addWidget(self.variables)
@@ -49,22 +47,21 @@ class CSSEditor:
         layout = QGridLayout(self.main_window)
         layout.addWidget(self.splitter)
         layout.addWidget(self.save)
-        layout.addWidget(self.status)
 
         self.main_window.resize(800, 600)
 
         self._project_dir = self._ensure_project_dir()
-        self._top_level_wigdets = list()
+        self._top_level_widgets = list()
         self._variables = dict()
         self._template = None
         self._stylesheet = ""
 
     def _ensure_project_dir(self):
-        dir = os.path.expanduser('~/CSSEditor/' + self.project_name + '/')
-        if not os.path.isdir(dir):
-            os.makedirs(dir)
+        dir_ = os.path.expanduser('~/CSSEditor/' + self.project_name + '/')
+        if not os.path.isdir(dir_):
+            os.makedirs(dir_)
 
-        return dir
+        return dir_
 
     def _open(self):
         self.variables.blockSignals(True)
@@ -87,6 +84,7 @@ class CSSEditor:
         self.variables.blockSignals(False)
         self.template.blockSignals(False)
 
+        self._template_changed()
         self._variables_changed()
         self._render_and_apply()
 
@@ -121,10 +119,8 @@ class CSSEditor:
             else:
                 self._variables[variable_name] = variable_value
 
-        self.status.setText("Variables OK")
-
     def _apply_style(self, style):
-        for widget in self._top_level_wigdets:
+        for widget in self._top_level_widgets:
             widget.setStyleSheet(style)
 
     def _render_and_apply(self):
@@ -141,11 +137,11 @@ class CSSEditor:
             f_stylesheet.write(self._stylesheet)
 
     def exec_(self):
+        self._top_level_widgets = [
+            widget for widget in QApplication.topLevelWidgets() if widget.windowTitle() != self.main_window.windowTitle()
+        ]
         self.app.aboutToQuit.connect(self._quit)
         self._open()
         self.main_window.show()
-        self._top_level_wigdets = [
-            widget for widget in QApplication.topLevelWidgets() if widget.windowTitle() != self.main_window.windowTitle()
-        ]
 
         return self.app.exec_()
