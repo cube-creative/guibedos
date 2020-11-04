@@ -8,6 +8,10 @@ If you don't plan on using Qt.py, you must use PyQt5/PySide2 (`from Qt import Qt
 
 # CSS
 
+## Themes
+
+:warning: The themes will probably be deprecated in the near future :warning:
+
 It is common to apply a custom CSS stylesheet to a QApplication.
 
 This module allows to load 6 different themes, borrowed from the [FreeCAD project](https://github.com/FreeCAD/FreeCAD/tree/master/src/Gui/Stylesheets)
@@ -38,7 +42,7 @@ app.exec_()
 
 ![CSS Themes](doc/css-themes.png)
 
-## Custom stylesheets
+### Custom stylesheets
 
 You can add your custom stylesheets to the chosen theme by passing a list of stylesheets to the `set_theme()` method.
 
@@ -53,6 +57,39 @@ custom_stylesheet = open(custom_stylesheet_file_path).read()
 
 css.set_theme(app, 'dark-blue', [custom_stylesheet])
 ````
+
+## Editor
+
+A small plain text editor with jinja2 capabilities is provided by the `guibedos.css.CSSEditor` class
+
+It wraps the execution of `QApplication.exec_()` and 
+dynamically applies the stylsheet to all the top level widgets (provided by `QApplication.topLevelWidgets()`) .
+
+The project_name you give creates a folder in `~/CSSEditor/<project_name>`.
+
+It contains
+
+- `.csseditor` : window position and status oh the editor
+- `theme.template` : the CSS template (lower part of the editor)
+- `theme.variables` : the variables used for jinja2 templating, in JSON format
+- `<project_name>.css` : the full stylesheet, this file is saved when the button "save" is pressed 
+
+### Example
+
+```python
+import sys
+from Qt import QtWidgets
+from guibedos.css import CSSEditor
+
+
+app = QApplication(sys.argv)
+
+main_window = QtWidgets.QMainWindow()
+main_window.show()
+
+editor = CSSEditor(app=main_window, project_name='SomeName')
+sys.exit(editor.exec_())
+```
 
 # Widgets
 
