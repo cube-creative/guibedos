@@ -1,5 +1,4 @@
-from collections import Counter
-from Qt.QtCore import Qt, QAbstractTableModel, Signal
+from PySide2.QtCore import Qt, QAbstractTableModel, Signal
 from .row import Row
 from .row_model_all import RowAllModel
 
@@ -25,16 +24,10 @@ class RowTableModel(QAbstractTableModel):
         self._row_count = 0
         self._headers = list()
         self._column_count = 0
-        self._search_items_text = []
-        self._search_items_counters = []
+        self._search_text = ""
         self._search_indexes = dict()
         self._sort_column = None
         self._sort_reversed = False
-        self._counters = dict()
-
-    @property
-    def total_row_count(self):
-        return self._model_all.row_count
 
     def reset_background_processing(self):
         self._model_all.reset_background_processing()
@@ -65,46 +58,22 @@ class RowTableModel(QAbstractTableModel):
         self.perform_search()
 
     def set_search_text(self, text):
-        self._search_items_text = text.lower().split()
+        self._search_text = text.lower().split()
         self.perform_search()
-
-    def set_search_counters(self, entries):
-        self._search_items_counters = [entry.lower() for entry in entries]
-        self.perform_search()
-
-    def reset_counters(self):
-        for _, counter in self._counters.values():
-            counter.clear()
 
     def perform_search(self):
         self.beginResetModel()
-        self.reset_counters()
         self._rows = list()
 
-        search = self._search_items_text + self._search_items_counters
         for row in self._model_all.rows:
-            if any(item not in row.search_cache for item in search):
+            if any(item not in row.search_cache for item in self._search_text):
                 continue
-
-            for index, counter in self._counters.items():
-                counter[1].update([row.cells[index][Row.DISPLAY]])
-
             self._rows.append(row)
 
         self._sort()
 
         self._row_count = len(self._rows)
         self.endResetModel()
-
-    @property
-    def counters(self):
-        return dict(self._counters.values())
-
-    def register_counters(self, column_names):
-        self._counters = dict()
-        column_indexes = [self._headers.index(column) for column in column_names]
-        for column_index in column_indexes:
-            self._counters[column_index] = self._headers[column_index], Counter()
 
     def _row_updated(self, row):
         index = self._search_indexes.get(row.index, -1)

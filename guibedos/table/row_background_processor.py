@@ -1,6 +1,6 @@
 import sys
 import traceback
-from Qt.QtCore import Signal, QThread
+from PySide2.QtCore import Signal, QThread
 from guibedos.threading import Threadable
 
 

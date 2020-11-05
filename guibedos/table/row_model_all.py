@@ -1,4 +1,4 @@
-from Qt.QtCore import QObject, Signal, QCoreApplication
+from PySide2.QtCore import QObject, Signal, QCoreApplication
 from guibedos.threading import move_to_new_thread
 from .row_background_processor import RowBackgroundProcessor
 
