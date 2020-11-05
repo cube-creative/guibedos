@@ -35,7 +35,7 @@ def set_theme(widget, theme_name, custom_stylesheets=None):
     if custom_stylesheets is None:
         custom_stylesheets = []
 
-    css_root = os.path.join(_here(), '../resources')
+    css_root = os.path.join(_here(), 'resources')
     css_filepath = os.path.join(css_root, theme_name + '.qss')
 
     if not os.path.isfile(css_filepath):

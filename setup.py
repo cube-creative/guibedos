@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 
 NAME = 'guibedos'
-VERSION = '0.13.2'
+VERSION = '0.13.1'
 DESCRIPTION = 'PySide widgets and helpers'
 AUTHOR = 'Cube Creative'
 AUTHOR_EMAIL = 'development@cube-creative.com'
