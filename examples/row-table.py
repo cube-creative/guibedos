@@ -4,7 +4,7 @@ This demonstrates the usage of a QTableView associated width a QAbstractTableMod
 Presented data is organized in rows
 """
 import random
-from PySide2.QtWidgets import QApplication
+from Qt.QtWidgets import QApplication
 from guibedos.table import Row, RowTableModel, RowTableWidget
 
 
@@ -49,13 +49,15 @@ if __name__ == '__main__':
     vue = RowTableWidget(
         auto_resize=False,
         single_row_select=True,
-        context_menu_callback=None
+        context_menu_callback=None,
+        has_counters=True
     )
 
     model = RowTableModel(
         background_processing_callback=process_row
     )
     model.set_headers(['Header', 'are', 'set', 'here', 'Computed data here'])
+    model.register_counters(['Header', 'set', 'here'])
     model.set_rows(make_data(200))
     model.start()
 

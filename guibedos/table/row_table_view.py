@@ -1,9 +1,9 @@
-from PySide2.QtCore import Qt, QMargins
-from PySide2.QtWidgets import QTableView, QAbstractItemView, QStyledItemDelegate
+from Qt.QtCore import Qt, QMargins
+from Qt.QtWidgets import QTableView, QAbstractItemView, QStyledItemDelegate
 from .row_table_model import RowTableModel
 
 
-CELL_PADDING = 12
+CELL_PADDING = 8
 
 
 class CellDelegate(QStyledItemDelegate):
