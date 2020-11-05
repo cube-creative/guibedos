@@ -1,5 +1,5 @@
-from PySide2.QtCore import Qt, Signal
-from PySide2.QtWidgets import QWidget, QScrollArea, QPushButton, QVBoxLayout, QLabel
+from Qt.QtCore import Qt, Signal
+from Qt.QtWidgets import QWidget, QScrollArea, QPushButton, QVBoxLayout, QLabel
 from guibedos.helpers import clear_layout
 from guibedos.constants import PROPERTY_SIDE_STROKED
 
