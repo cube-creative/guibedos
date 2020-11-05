@@ -1,6 +1,6 @@
 import re
-from Qt.QtCore import Qt
-from Qt.QtGui import QSyntaxHighlighter, QTextCharFormat, QFont
+from PySide2.QtCore import Qt
+from PySide2.QtGui import QSyntaxHighlighter, QTextCharFormat, QFont
 
 
 COMMENT_RE = re.compile(r"/\*.+\*/")
