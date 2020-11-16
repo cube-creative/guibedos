@@ -1,4 +1,4 @@
-from PySide2.QtGui import QColor
+from Qt.QtGui import QColor
 
 
 class Row:
