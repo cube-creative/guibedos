@@ -1,0 +1,1 @@
+PROPERTY_SIDE_STROKED = 'sideStroked'

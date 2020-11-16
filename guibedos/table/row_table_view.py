@@ -1,9 +1,9 @@
-from PySide2.QtCore import Qt, QMargins
-from PySide2.QtWidgets import QTableView, QAbstractItemView, QStyledItemDelegate
+from Qt.QtCore import Qt, QMargins
+from Qt.QtWidgets import QTableView, QAbstractItemView, QStyledItemDelegate
 from .row_table_model import RowTableModel
 
 
-CELL_PADDING = 12
+CELL_PADDING = 8
 
 
 class CellDelegate(QStyledItemDelegate):
@@ -56,7 +56,6 @@ class RowTableView(QTableView):
         self._model = model
 
         if self._auto_resize:
-            self._model.modelReset.connect(self.resizeRowsToContents)
             self._model.modelReset.connect(self.resizeColumnsToContents)
             self.resizeColumnsToContents()
             self.resizeRowsToContents()

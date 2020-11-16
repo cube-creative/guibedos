@@ -16,7 +16,7 @@ class InteractionHandler:
 
     def _get_widget(self, given_property, widgets):
         for property, widget in widgets.items():
-            if property == given_property:
+            if property.name == given_property.name:
                 return widget
 
             if type(widget) == dict:
