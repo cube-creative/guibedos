@@ -85,10 +85,9 @@ class RowTableWidget(QFrame):
         self.progress_bar.setVisible(model.has_background_callback)
 
     @property
-    def selected_row(self):
-        indexes = self.table_view.selectionModel().selectedIndexes()
-        if indexes:
-            return self.model.data(indexes[0], Qt.UserRole)
+    def selected_rows(self):
+        return [self.model.data(index, Qt.UserRole) for index
+                in self.table_view.selectionModel().selectedIndexes() if index.column() == 0]
 
     @property
     def search_text(self):
