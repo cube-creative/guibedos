@@ -88,7 +88,17 @@ class RowTableWidget(QFrame):
     def selected_row(self):
         indexes = self.table_view.selectionModel().selectedIndexes()
         if indexes:
-            return self.model.data(indexes[0], Qt.UserRole)
+            selected_rows = []
+            rows_in_list = []
+            for index in indexes:
+                index_row = index.row()
+                if index_row in rows_in_list:
+                    continue
+
+                rows_in_list.append(index.row())
+                selected_rows.append(index)
+
+            return [self.model.data(row, Qt.UserRole) for row in selected_rows]
 
     @property
     def search_text(self):
