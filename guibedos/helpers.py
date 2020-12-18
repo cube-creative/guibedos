@@ -91,6 +91,7 @@ def clear_layout(layout):
             else:
                 clear_layout(item.layout())
 
+
 def cursor_line_number(text_lines, cursor_position):
     character_count = 0
     for line, text in enumerate(text_lines):
