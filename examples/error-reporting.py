@@ -18,18 +18,17 @@ class Window(QtWidgets.QWidget):
         layout.addWidget(self.button_normal)
         layout.addWidget(self.button_raising)
 
-    @error_reported
+    @error_reported('Normal Clicked')
     def button_normal_clicked(self):
         print("Normal button clicked")
 
-    @error_reported
+    @error_reported('Raising demonstration')
     def button_raising_clicked(self):
         raise RuntimeError('An exception has occurred')
 
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
-    css.set_theme(app, 'dark-blue')
 
     window = Window()
     window.resize(800, 150)
