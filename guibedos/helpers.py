@@ -1,5 +1,3 @@
-from functools import wraps
-
 from Qt import QtCore
 from Qt import QtWidgets
 
