@@ -54,6 +54,7 @@ class _ReportingWindow(QDialog):
 
 
 def error_reported(name):
+
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):

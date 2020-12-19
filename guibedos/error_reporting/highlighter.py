@@ -5,7 +5,7 @@ from Qt.QtGui import QSyntaxHighlighter, QTextCharFormat, QFont
 
 LINE_FILE_RE = re.compile(r"^\s\s\S.+")
 LINE_FILE_FORMAT = QTextCharFormat()
-LINE_FILE_FORMAT.setForeground(Qt.darkGray)
+LINE_FILE_FORMAT.setForeground(Qt.lightGray)
 
 LINE_CODE_RE = re.compile(r"^\s\s\s\s\S.+")
 LINE_CODE_FORMAT = QTextCharFormat()
@@ -19,11 +19,11 @@ FILE_FORMAT.setForeground(Qt.black)
 CALL_RE = re.compile(r", in ([^$]+)$")
 CALL_FORMAT = QTextCharFormat()
 CALL_FORMAT.setFontWeight(QFont.Bold)
-CALL_FORMAT.setForeground(Qt.darkMagenta)
+CALL_FORMAT.setForeground(Qt.magenta)
 
 LINE_RE = re.compile(r"line \d+")
 LINE_FORMAT = QTextCharFormat()
-LINE_FORMAT.setForeground(Qt.darkGreen)
+LINE_FORMAT.setForeground(Qt.green)
 
 
 class TracebackHighlighter(QSyntaxHighlighter):
