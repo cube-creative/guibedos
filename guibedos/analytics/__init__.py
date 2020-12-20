@@ -2,9 +2,11 @@ import time
 import logging
 import functools
 
+from .constants import *
+
 
 def analyzed(name):
-    logging.info('Analytics register[%s]', name)
+    logging.info(REGISTER_MESSAGE, name)
 
     def decorator(func):
 
@@ -22,7 +24,7 @@ def analyzed(name):
 
             finally:
                 logging.info(
-                    'Analytics call[%s](%s)%s',
+                    CALL_MESSAGE,
                     name,
                     time.time() - now,
                     ['', '*'][raised]
