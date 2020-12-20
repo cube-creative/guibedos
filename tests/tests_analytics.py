@@ -1,19 +1,26 @@
 import sys
-from subprocess import Popen, PIPE
 from unittest import TestCase
 
-
-COMMAND = [sys.executable, '-m', 'guibedos.analytics', 'Analytics Script', '_analytics_script.py']
+from guibedos.analytics.runner import Runner
 
 
 class TestAnalytics(TestCase):
 
     def testAll(self):
-        process = Popen(
-            COMMAND,
-            stdout=PIPE, stderr=PIPE
-        )
-        stdout, stderr = process.communicate()
+        runner = Runner('Analytics Tests')
+        report = runner.run([sys.executable, '_analytics_script.py'])
 
-        print(stdout)
-        print(stderr)
+        # General
+        self.assertEqual(report['name'], 'Analytics Tests')
+        self.assertEqual(report['exit_code'], 1)
+
+        # Never Used
+        self.assertEqual(report['calls']['Never used']['count'], 0)
+
+        # Five times
+        self.assertEqual(report['calls']['Used five times']['count'], 5)
+        self.assertEqual(report['calls']['Used five times']['exception_count'], 0)
+
+        # Raising exception
+        self.assertEqual(report['calls']['Raising exception']['count'], 1)
+        self.assertEqual(report['calls']['Raising exception']['exception_count'], 1)

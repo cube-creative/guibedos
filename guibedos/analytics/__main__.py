@@ -1,30 +1,12 @@
-import re
 import sys
-from guibedos.analytics.runner import execute
-from guibedos.analytics.constants import *
-
-
-RE_REGISTER = re.compile(REGISTER_PATTERN)
-RE_CALL = re.compile(CALL_PATTERN)
-
-
-def process_output(line):
-    line = line.decode()
-
-    for registered in RE_REGISTER.findall(line):
-        print(registered)
-
-    for called in RE_CALL.findall(line):
-        print(called)
+from guibedos.analytics.runner import Runner
 
 
 if __name__ == '__main__':
     app_name = sys.argv[1]
     actual_command = [sys.executable] + sys.argv[2:]
 
-    exit_code = execute(
-        command=actual_command,
-        stderr_callback=process_output
-    )
+    runner = Runner(app_name)
+    report = runner.run(actual_command)
 
-    sys.exit(exit_code)
+    sys.exit(runner.exit_code)
