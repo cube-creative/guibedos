@@ -1,8 +1,8 @@
 import functools
 import traceback
 
-from PySide2.QtGui import QFontDatabase, QFont
-from PySide2.QtWidgets import QDialog, QPlainTextEdit, QLabel, QGridLayout,QApplication, QStyle, QPushButton
+from Qt.QtGui import QFontDatabase, QFont
+from Qt.QtWidgets import QDialog, QPlainTextEdit, QLabel, QGridLayout,QApplication, QStyle, QPushButton
 
 from .highlighter import TracebackHighlighter
 
