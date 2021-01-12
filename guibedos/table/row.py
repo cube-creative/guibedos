@@ -1,4 +1,4 @@
-from Qt.QtGui import QColor
+from Qt.QtGui import QColor, QPixmap
 
 
 class Row:
@@ -49,8 +49,13 @@ class Row:
     def _ensure_qcolor(value):
         if not value:
             return None
-        elif not isinstance(value, QColor):
+
+        if isinstance(value, tuple):
             return QColor(*value)
+
+        elif isinstance(value, str):
+            return QPixmap(value)
+
         return value
 
     def __repr__(self):
