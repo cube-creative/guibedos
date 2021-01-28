@@ -26,13 +26,6 @@ stornext:
     - C:/cube/python3/python.exe c:/cube/scripts/mount-r.py
     - C:/cube/python3/python.exe -m releaselucet --staging --pip --drive STORNEXT
 
-ranch:
-  stage: deploy
-  tags: [deploy-windows]
-  script:
-    - C:/cube/python3/python.exe c:/cube/scripts/mount-r.py
-    - C:/cube/python3/python.exe -m releaselucet --staging --pip --drive RANCH
-
 docgen:
   stage: docgen
   tags: [docgenyco]
