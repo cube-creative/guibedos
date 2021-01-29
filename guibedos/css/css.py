@@ -8,7 +8,7 @@ import os
 
 
 def _here():
-    return os.path.dirname((os.path.dirname(__file__))
+    return os.path.dirname((os.path.dirname(__file__)))
 
 
 def parse_images(css_content):
