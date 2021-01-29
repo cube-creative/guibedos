@@ -1,5 +1,6 @@
 import sys
 import asyncio
+import platform
 
 
 class _Buffer:
@@ -44,7 +45,12 @@ async def _stream_subprocess(command, stdout_callback, stderr_callback):
 
 
 def run(command, stdout_callback=None, stderr_callback=None):
-    loop = asyncio.get_event_loop()
+    if platform.system() == "Windows":
+        loop = asyncio.ProactorEventLoop()
+        asyncio.set_event_loop(loop)
+    else:
+        loop = asyncio.get_event_loop()
+
     exit_code = loop.run_until_complete(
         _stream_subprocess(
             command,
