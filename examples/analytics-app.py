@@ -7,7 +7,7 @@ python -m guidebos.analytics --name AnalyticsDemo --json analytics-demos.json an
 """
 import logging
 from Qt import QtWidgets
-from guibedos.helpers import use_case
+from guibedos.use_case import use_case
 
 
 logging.basicConfig(level=logging.INFO)
