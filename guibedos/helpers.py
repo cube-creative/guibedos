@@ -1,9 +1,6 @@
 from Qt import QtCore
 from Qt import QtWidgets
 
-from .analytics import analyzed
-from .error_reporting import error_reported
-
 
 class Hourglass:
     """
@@ -103,14 +100,3 @@ def cursor_line_number(text_lines, cursor_position):
             return line
 
     return len(text_lines)
-
-
-def use_case(name):
-    """
-    Composes the `@analytics.analyzed` and `@error_reporting.error_reported` decorators
-
-    :param name: Name that will be reported in logs and error reporting windows
-    """
-    def decorator(func):
-        return error_reported(name)(analyzed(name)(func))
-    return decorator
