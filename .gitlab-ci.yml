@@ -12,6 +12,13 @@ isilon:
     - C:/cube/python3/python.exe c:/cube/scripts/mount-r.py
     - C:/cube/python3/python.exe -m releaselucet --staging --pip --drive ISILON
 
+stornext:
+  stage: deploy
+  tags: [deploy-windows]
+  script:
+    - C:/cube/python3/python.exe c:/cube/scripts/mount-r.py
+    - C:/cube/python3/python.exe -m releaselucet --staging --pip --drive STORNEXT
+
 lyon:
   stage: deploy
   tags: [deploy-windows]
@@ -19,12 +26,12 @@ lyon:
     - C:/cube/python3/python.exe c:/cube/scripts/mount-r.py
     - C:/cube/python3/python.exe -m releaselucet --staging --pip --drive LYON
 
-stornext:
+lyonbuffer:
   stage: deploy
   tags: [deploy-windows]
   script:
     - C:/cube/python3/python.exe c:/cube/scripts/mount-r.py
-    - C:/cube/python3/python.exe -m releaselucet --staging --pip --drive STORNEXT
+    - C:/cube/python3/python.exe -m releaselucet --staging --pip --drive LYONBUFFER
 
 docgen:
   stage: docgen
