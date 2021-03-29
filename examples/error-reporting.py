@@ -1,4 +1,5 @@
 from Qt import QtWidgets
+
 from guibedos.error_reporting import error_reported
 
 
