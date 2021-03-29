@@ -1,4 +1,4 @@
-from Qt import QtWidgets
+from PySide2 import QtWidgets
 
 
 WARNING = QtWidgets.QMessageBox.Icon.Warning
@@ -12,4 +12,7 @@ def make_box(message, title, icon):
     confirmation_box.setText(message)
     confirmation_box.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
 
-    return confirmation_box.exec_() == QtWidgets.QMessageBox.Ok
+    result = confirmation_box.exec_() == QtWidgets.QMessageBox.Ok
+    confirmation_box.deleteLater()
+
+    return result
