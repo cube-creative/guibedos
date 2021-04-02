@@ -20,7 +20,11 @@ class _ReportingWindow(QDialog):
         self.setWindowTitle('Error reporting')
         self.setWindowIcon(icon)
 
-        font = QFontDatabase().systemFont(QFontDatabase.FixedFont)
+        try:
+            font = QFontDatabase().systemFont(QFontDatabase.FixedFont)
+        except AttributeError as e:
+            font = QFont()
+            font.setStyleHint(QFont.TypeWriter)
 
         self.text = QPlainTextEdit()
         self.text.setFont(font)
