@@ -30,7 +30,7 @@ root_property = df.Group('personal_info', caption="Personnal Information", prope
     df.Filepath('profile_picture', caption='Profile picture', default='C:/test.jpg', validator=os.path.exists),
     df.Datetime('birthday',
                 caption='Birthday',
-                default=datetime.strptime('1995-06-25 03:30:00', "%Y-%m-%d %H:%M:%S")
+                default=datetime.timestamp(datetime.strptime('1995-06-25 03:30:00', "%Y-%m-%d %H:%M:%S"))
                 ),
     df.Group('interests', caption='Centres d interet', layout=df.FLOW, properties=(
         df.Bool('music', caption="Musique", default=False),
