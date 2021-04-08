@@ -6,14 +6,15 @@ class Datetime(BaseProperty):
 
     @property
     def value(self):
-        return self._value
+        return self._value.isoformat()
 
     @value.setter
     def value(self, value):
-        self._value = value
+        if isinstance(value, datetime.datetime):
+            self._value = value
+
+    def to_datetime(self):
+        return self._value
 
     def _validate(self):
-        if isinstance(self._value, str) or self._value is None:
-            return True
-        else:
-            return False
+        return True
