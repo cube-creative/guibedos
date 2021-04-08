@@ -6,12 +6,14 @@ __all__ = [
     'Label',
     'Integer',
     'Filepath',
-    'Group'
+    'Group',
+    'Datetime'
 ]
 
 from .text import Text
 from .enum import Enum
 from .bool_ import Bool
+from .datetime import Datetime
 from .list_ import List
 from .label import Label
 from .integer import Integer
