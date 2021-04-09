@@ -1,12 +1,17 @@
 from datetime import datetime
 from Qt import QtWidgets
 
+
 class DateTimeEdit(QtWidgets.QDateTimeEdit):
 
     def __init__(self, property_, parent=None):
+        QtWidgets.QDateTimeEdit.__init__(self, parent)
         self.property_ = property_
-        QtWidgets.QDateTimeEdit.__init__(self, datetime.fromtimestamp(self.property_.value), parent)
+        self.setDateTime(datetime.fromtimestamp(self.property_.value))
+        self.setDisplayFormat("yyyy'-'MM'-'dd' 'hh':'mm")
         self.setCalendarPopup(True)
+        self.clearMaximumDateTime()
+        self.clearMinimumDateTime()
         self.dateTimeChanged.connect(self._value_changed)
 
     def _value_changed(self, value):
