@@ -1,6 +1,7 @@
 import json
 import os.path
-from Qt import QtWidgets
+from datetime import datetime
+from Qt import QtWidgets, QtCore
 from guibedos import css
 from guibedos import declarative_form as df
 
@@ -27,6 +28,11 @@ root_property = df.Group('personal_info', caption="Personnal Information", prope
     df.Text('email', caption='E-mail', default='jean.bauchefort@gmail.com', validator=_is_mail_valid),
     df.Bool('single', caption='Celibataire', default=True),
     df.Filepath('profile_picture', caption='Profile picture', default='C:/test.jpg', validator=os.path.exists),
+    df.Datetime(
+        'birthday',
+        caption='Birthday',
+        default=datetime.timestamp(datetime.strptime('1995-06-25 03:30:00', "%Y-%m-%d %H:%M:%S"))
+    ),
     df.Group('interests', caption='Centres d interet', layout=df.FLOW, properties=(
         df.Bool('music', caption="Musique", default=False),
         df.Bool('movies', caption="Cinema", default=True),
