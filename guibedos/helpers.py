@@ -111,7 +111,7 @@ def set_style_property(widget, value, property_name="style"):
     widget.style().polish(widget);
 
 
-def load_stylesheet(widget, filepath):
+def load_stylesheet(widget, css_filepath):
     """
     Loads given file contents then sets it as given widget stylesheet
     """
