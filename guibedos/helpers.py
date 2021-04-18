@@ -100,3 +100,12 @@ def cursor_line_number(text_lines, cursor_position):
             return line
 
     return len(text_lines)
+
+
+def set_css_property(widget, value, property_name="style"):
+    """
+    Refreshes a QWidget property then unpolishes/polishes/updates it's style
+    """
+    widget.setProperty(property_name, value);
+    widget.style().unpolish(widget);
+    widget.style().polish(widget);
