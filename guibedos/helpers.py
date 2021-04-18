@@ -102,10 +102,18 @@ def cursor_line_number(text_lines, cursor_position):
     return len(text_lines)
 
 
-def set_css_property(widget, value, property_name="style"):
+def set_style_property(widget, value, property_name="style"):
     """
-    Refreshes a QWidget property then unpolishes/polishes/updates it's style
+    Refreshes a QWidget property then unpolishes/polishes it's style
     """
     widget.setProperty(property_name, value);
     widget.style().unpolish(widget);
     widget.style().polish(widget);
+
+
+def load_stylesheet(widget, filepath):
+    """
+    Loads given file contents then sets it as given widget stylesheet
+    """
+    with open(css_filepath, 'r') as css_file:
+        widget.setStyleSheet(css_file.read())
