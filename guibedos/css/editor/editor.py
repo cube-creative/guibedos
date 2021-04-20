@@ -23,9 +23,9 @@ class CSSEditor:
     """
     Make sure to instanciate *after* creating the top level widgets of your QApplication
     """
-    def __init__(self, app, project_name):
-        self.app = app
+    def __init__(self, project_name):
         self.project_name = project_name
+        self._app = QApplication.instance()
         self._css_filepath = None
 
         self.main_window = QWidget()
@@ -67,8 +67,9 @@ class CSSEditor:
         self._template = None
         self._stylesheet = ""
 
-        self.app.aboutToQuit.connect(self._save_editor_state)
+        self._app.aboutToQuit.connect(self._save_editor_state)
         self._open()
+        self.save_destination.setText(self.css_filepath)
         self.main_window.show()
 
     @property
