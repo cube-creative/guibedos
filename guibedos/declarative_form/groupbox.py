@@ -1,4 +1,7 @@
-from Qt import QtWidgets
+try:
+    from Qt import QtWidgets
+except ImportError:
+    from qtpy import QtWidgets
 from guibedos.widgets import FlowLayout
 # TODO : this is not part of the widgets packages because maker cannot be imported from there -> "find a better way"
 try:

@@ -7,8 +7,14 @@ Allows to use Qt.py inside Blender
 See `tube_scenemanager`, `character_picker` and `resource_library` for examples
 """
 import atexit
-from Qt import QtCore
-from Qt import QtWidgets
+
+try:
+    from Qt import QtWidgets
+    from Qt import QtCore
+except ImportError:
+    from qtpy import QtWidgets
+    from qtpy import QtCore
+
 from . import css
 import bpy
 from bpy.app.handlers import persistent

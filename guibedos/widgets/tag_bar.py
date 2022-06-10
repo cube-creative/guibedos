@@ -2,8 +2,14 @@
 Button based LineEdit, for tag edition
 """
 import re
-from Qt import QtCore
-from Qt import QtWidgets
+
+try:
+    from Qt import QtWidgets
+    from Qt import QtCore
+except ImportError:
+    from qtpy import QtWidgets
+    from qtpy import QtCore
+
 from ..css import parse_images
 from .flow_layout import FlowLayout
 

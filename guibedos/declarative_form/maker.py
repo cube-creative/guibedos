@@ -1,4 +1,7 @@
-from Qt import QtWidgets
+try:
+    from Qt import QtWidgets
+except ImportError:
+    from qtpy import QtWidgets
 from .widgets import *
 from .properties import *
 from .groupbox import GroupBox
