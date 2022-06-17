@@ -7,8 +7,13 @@ Adapted from https://github.com/PySide/Examples/blob/master/examples/layouts/flo
 
 This file is licensed under GPLv2
 """
-from Qt import QtCore
-from Qt import QtWidgets
+
+try:
+    from Qt import QtWidgets
+    from Qt import QtCore
+except ImportError:
+    from qtpy import QtWidgets
+    from qtpy import QtCore
 
 
 class FlowLayout(QtWidgets.QLayout):

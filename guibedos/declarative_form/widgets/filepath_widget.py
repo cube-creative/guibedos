@@ -1,5 +1,8 @@
 import os
-from Qt import QtWidgets
+try:
+    from Qt import QtWidgets
+except ImportError:
+    from qtpy import QtWidgets
 
 
 class FileDialog(QtWidgets.QFileDialog):

@@ -1,4 +1,8 @@
-from Qt import QtWidgets
+try:
+    from Qt import QtWidgets
+except ImportError:
+    from qtpy import QtWidgets
+
 from guibedos import css
 from guibedos.widgets import TagBar
 

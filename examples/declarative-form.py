@@ -1,7 +1,13 @@
 import json
 import os.path
+try:
+    from Qt import QtWidgets
+	from Qt import QtCore
+except ImportError:
+    from qtpy import QtWidgets
+	from qtpy import QtCore
+
 from datetime import datetime
-from Qt import QtWidgets, QtCore
 from guibedos import css
 from guibedos import declarative_form as df
 
