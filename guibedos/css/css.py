@@ -7,8 +7,8 @@ more info here https://github.com/FreeCAD/FreeCAD/tree/master/src/Gui/Stylesheet
 import os
 
 
-def _here():
-    return os.path.dirname(__file__)
+def _root():
+    return os.path.dirname((os.path.dirname(__file__)))
 
 
 def parse_images(css_content):
@@ -18,8 +18,8 @@ def parse_images(css_content):
     :param css_content: Text of stylesheet
     :return: Parsed text of stylesheet
     """
-    css_root = os.path.join(_here(), 'resources')
-    return css_content.replace('qss:', css_root.replace('\\', '/') + '/')
+    resources_path = os.path.join(_root(), 'resources')
+    return css_content.replace('qss:', resources_path.replace('\\', '/') + '/')
 
 
 def set_theme(widget, theme_name, custom_stylesheets=None):
@@ -35,8 +35,8 @@ def set_theme(widget, theme_name, custom_stylesheets=None):
     if custom_stylesheets is None:
         custom_stylesheets = []
 
-    css_root = os.path.join(_here(), 'resources')
-    css_filepath = os.path.join(css_root, theme_name + '.qss')
+    resources_path = os.path.join(_root(), 'resources')
+    css_filepath = os.path.join(resources_path, theme_name + '.qss')
 
     if not os.path.isfile(css_filepath):
         raise RuntimeError('Could not find theme file ' + css_filepath)

@@ -40,6 +40,7 @@ def make_widget(property_, parent_widget):
         Enum: _make_enum,
         Integer: _make_integer,
         Bool: _make_bool,
+        Datetime: _make_datetime,
         Filepath: _make_filepath,
         List: _make_list
     }[type(property_)](property_, parent_widget)
@@ -117,3 +118,14 @@ def _make_list(property_, parent_widget):
         stretches=[0, 100]
     ))
     return listwidget
+
+
+def _make_datetime(property_, parent_widget):
+    label = QtWidgets.QLabel(property_.caption)
+    date_widget = DateTimeEdit(property_)
+    parent_widget.layout().addWidget(vertical_layout(
+        widgets=[label, date_widget],
+        stretches=[0, 100]
+    ))
+    return date_widget
+

@@ -16,16 +16,25 @@ class Hourglass:
         # do lengthy stuff
     ````
     """
-    def __init__(self, parent):
+
+    def __init__(self, parent=None):
+        if parent is None:
+            parent = QtWidgets.QApplication.instance()
         self._parent = parent
 
     def __enter__(self):
         QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
-        self._parent.setEnabled(False)
+        try:
+            self._parent.setEnabled(False)
+        except AttributeError:
+            pass
         QtWidgets.QApplication.processEvents()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self._parent.setEnabled(True)
+        try:
+            self._parent.setEnabled(True)
+        except AttributeError:
+            pass
         QtWidgets.QApplication.restoreOverrideCursor()
         QtWidgets.QApplication.processEvents()
 
@@ -57,3 +66,59 @@ def update_combo(combo, items, select=None):
     else:
         combo.blockSignals(False)
         combo.setCurrentIndex(combo.findText(current))
+
+
+class WindowPosition:
+    @staticmethod
+    def restore(widget, data):
+        if data['maximized']:
+            widget.setWindowState(QtCore.Qt.WindowMaximized)
+        else:
+            geometry = QtCore.QRect()
+            geometry.setCoords(*data['geometry'])
+            widget.setGeometry(geometry)
+
+    @staticmethod
+    def save(widget):
+        return {
+            'geometry': widget.geometry().getCoords(),
+            'maximized': bool(widget.windowState() & QtCore.Qt.WindowMaximized)
+        }
+
+
+def clear_layout(layout):
+    if layout is not None:
+        while layout.count():
+            item = layout.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+            else:
+                clear_layout(item.layout())
+
+
+def cursor_line_number(text_lines, cursor_position):
+    character_count = 0
+    for line, text in enumerate(text_lines):
+        character_count += len(text) + 1
+        if cursor_position < character_count:
+            return line
+
+    return len(text_lines)
+
+
+def set_style_property(widget, value, property_name="style"):
+    """
+    Refreshes a QWidget property then unpolishes/polishes it's style
+    """
+    widget.setProperty(property_name, value);
+    widget.style().unpolish(widget);
+    widget.style().polish(widget);
+
+
+def load_stylesheet(widget, css_filepath):
+    """
+    Loads given file contents then sets it as given widget stylesheet
+    """
+    with open(css_filepath, 'r') as css_file:
+        widget.setStyleSheet(css_file.read())
